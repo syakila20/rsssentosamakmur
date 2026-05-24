@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import "leaflet/dist/leaflet.css";
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -18,9 +18,18 @@
     --foreground: #ededed;
   }
 }
-
+html {
+  scroll-behavior: smooth;
+}
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+.snap-container {
+  scroll-snap-type: y mandatory;
+}
+
+.snap-item {
+  scroll-snap-align: start;
 }
