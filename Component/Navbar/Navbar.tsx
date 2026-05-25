@@ -98,7 +98,6 @@ export default function Navbar() {
             <Link href="/">
               <div
                 className=" 
-           
               z-155 relative
               left-10
               "

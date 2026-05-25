@@ -18,6 +18,12 @@ export default function SafeImage({
     <Image
       {...props}
       src={imgSrc}
+      placeholder="empty"
+      sizes="
+(max-width: 640px) 100vw,
+(max-width: 1024px) 50vw,
+25vw
+"
       alt={alt}
       onError={() => {
         setImgSrc(fallback);

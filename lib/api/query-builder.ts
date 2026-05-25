@@ -1,31 +1,26 @@
-import { buildMeta, buildPagination } from "./pagination";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { BuildQueryOptions } from "@/types/type";
+import { buildPagination } from "./pagination";
 
-type BuildQueryOptions = {
-  searchParams: URLSearchParams;
-  searchableFields?: string[];
-  filterableFields?: string[];
-  sortableFields?: string[];
-  defaultSort?: string;
-};
-
-export function buildQuery({
+export function buildQuery<TWhere extends Record<string, unknown>>({
   searchParams,
   searchableFields = [],
   filterableFields = [],
   sortableFields = [],
   defaultSort = "createdAt",
-}: BuildQueryOptions) {
-  const pagination = buildPagination(searchParams);
+}: BuildQueryOptions<TWhere>) {
+  const { page, limit, skip, take } = buildPagination(searchParams);
 
   const search = searchParams.get("search");
-  const where: Record<string, unknown> = {};
+
+  // ✅ FIX: Prisma-safe where object
+  const where: TWhere = {} as TWhere;
 
   // ======================
   // SEARCH
   // ======================
-
-  if (search && searchableFields.length > 0) {
-    where.OR = searchableFields.map((field) => ({
+  if (search && searchableFields.length) {
+    (where as any).OR = searchableFields.map((field) => ({
       [field]: {
         contains: search,
         mode: "insensitive",
@@ -36,34 +31,30 @@ export function buildQuery({
   // ======================
   // FILTER
   // ======================
-
   for (const field of filterableFields) {
     const value = searchParams.get(field);
 
     if (value) {
-      where[field] = value;
+      (where as any)[field] = value;
     }
   }
 
   // ======================
   // SORT
   // ======================
-
-  const requestedSort = searchParams.get("sort");
-
-  const sort = sortableFields.includes(requestedSort || "")
-    ? requestedSort!
-    : defaultSort;
-
+  const sort = searchParams.get("sort");
   const order = searchParams.get("order") === "asc" ? "asc" : "desc";
+
+  const finalSort = sortableFields.includes(sort || "") ? sort! : defaultSort;
 
   return {
     where,
-
+    page,
+    limit,
+    skip,
+    take,
     orderBy: {
-      [sort]: order,
+      [finalSort]: order,
     },
-
-    ...pagination,
   };
 }
