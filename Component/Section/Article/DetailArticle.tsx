@@ -1,6 +1,6 @@
-import Back from "@/component/Back/Back";
-import SafeImage from "@/component/SafeImage/SafeImage";
-import Image from "next/image";
+// import Back from "@/component/Back/Back";
+
+import SafeImage from "@/Component/SafeImage/SafeImage";
 
 type Props = {
   title: string;
@@ -15,7 +15,7 @@ export default function BlogDetail(props: Props) {
   return (
     <article className="">
       <div className="flex gap-2 mb-4">
-        <Back desc="Blog Detail" title="Back to Blog List" linkTo="/blog" />
+        {/* <Back desc="Blog Detail" title="Back to Blog List" linkTo="/blog" /> */}
         {/* <Link
           href={"/blog"}
           className="bg-blue-800 flex rounded-full h-9 w-9 px-2 items-center text-white"
@@ -27,8 +27,14 @@ export default function BlogDetail(props: Props) {
       <h1 className="text-3xl font-bold text-slate-600">{props.title}</h1>
 
       <div className="mt-3 flex gap-4 text-sm text-slate-500 items-center">
-        <span>{props.date}</span>•<span>{props.readingTime} menit baca</span>
-        <span className="inline-flex items-center px-3 py-1 text-base font-medium rounded-full bg-blue-800 text-white">
+        <span className="inline-flex items-center px-3 py-1 text-[8pt] font-medium rounded-full bg-gray-100 text-slate-700 uppercase">
+          {props.date}
+        </span>
+        •{" "}
+        <span className="inline-flex items-center px-3 py-1 text-[8pt] font-medium rounded-full bg-gray-100 text-slate-700 uppercase">
+          {props.readingTime} menit baca
+        </span>
+        <span className="inline-flex items-center px-3 py-1 text-[8pt] font-medium rounded-full bg-gray-100 text-slate-700 uppercase">
           {props?.category}
         </span>
       </div>

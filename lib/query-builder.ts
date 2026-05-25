@@ -1,3 +1,6 @@
+import { BuildQueryOptions } from "@/types/type";
+import { buildPagination } from "./api/pagination";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type QueryParams = {
   searchParams: URLSearchParams;
@@ -6,28 +9,25 @@ type QueryParams = {
   defaultSort?: string;
 };
 
-export function buildQuery({
+export function buildQuery<TWhere extends Record<string, unknown>>({
   searchParams,
   searchableFields = [],
   filterableFields = [],
+  sortableFields = [],
   defaultSort = "createdAt",
-}: QueryParams) {
-  // ======================
-  // PAGINATION
-  // ======================
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Math.min(Number(searchParams.get("limit")) || 10, 100);
-  const skip = (page - 1) * limit;
+}: BuildQueryOptions<TWhere>) {
+  const { page, limit, skip, take } = buildPagination(searchParams);
+
+  const search = searchParams.get("search");
+
+  // ✅ FIX: Prisma-safe where object
+  const where: TWhere = {} as TWhere;
 
   // ======================
   // SEARCH
   // ======================
-  const search = searchParams.get("search") || "";
-
-  const where: any = {};
-
-  if (search && searchableFields.length > 0) {
-    where.OR = searchableFields.map((field) => ({
+  if (search && searchableFields.length) {
+    (where as any).OR = searchableFields.map((field) => ({
       [field]: {
         contains: search,
         mode: "insensitive",
@@ -38,33 +38,33 @@ export function buildQuery({
   // ======================
   // FILTER
   // ======================
-  filterableFields.forEach((field) => {
+  for (const field of filterableFields) {
     const value = searchParams.get(field);
+
     if (value) {
-      where[field] = value;
+      (where as any)[field] = value;
     }
-  });
+  }
 
   // ======================
-  // SORTING
+  // SORT
   // ======================
-  const sort = searchParams.get("sort") || defaultSort;
+  const sort = searchParams.get("sort");
   const order = searchParams.get("order") === "asc" ? "asc" : "desc";
 
-  const orderBy = {
-    [sort]: order,
-  };
+  const finalSort = sortableFields.includes(sort || "") ? sort! : defaultSort;
 
   return {
     where,
-    skip,
-    take: limit,
     page,
     limit,
-    orderBy,
+    skip,
+    take,
+    orderBy: {
+      [finalSort]: order,
+    },
   };
 }
-
 export function buildMeta(total: number, page: number, limit: number) {
   return {
     total,

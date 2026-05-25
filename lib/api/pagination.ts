@@ -13,13 +13,13 @@ export function buildPagination(searchParams: URLSearchParams) {
   };
 }
 
-export function buildMeta(total: number, page: number, limit: number) {
+export function buildMeta(page: number, limit: number, total: number) {
   const totalPages = Math.ceil(total / limit);
 
   return {
-    total,
     page,
     limit,
+    total,
     totalPages,
     hasNextPage: page < totalPages,
     hasPreviousPage: page > 1,

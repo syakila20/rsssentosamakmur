@@ -1,30 +1,15 @@
 "use client";
+import SafeImage from "@/Component/SafeImage/SafeImage";
+import { formatTime, getDayName } from "@/lib/helperDate";
 import { toSlug } from "@/lib/toSlug";
+import { IDoctorCard } from "@/types/type";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
-
-interface Props {
-  name: string;
-  specialty: string;
-  location: string;
-  image: string;
-  experience: string;
-  rating: number;
-  reviews: number;
-  isOnline?: boolean;
-  slug: string;
-  spesialitySlug?: string;
+interface IObjDoctor {
+  doctor: IDoctorCard;
 }
 
-export default function DoctorCard({
-  name,
-  specialty,
-
-  isOnline,
-  slug,
-  spesialitySlug,
-}: Props) {
+export default function DoctorCard({ doctor }: IObjDoctor) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -34,41 +19,63 @@ export default function DoctorCard({
       className="w-45 lg:w-50 md:w-52 xl:w-52
              rounded-2xl bg-white/70 backdrop-blur-xl border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
     >
-      <div className="relative h-45 lg:h-50 md:h-50 ">
-        <Image
-          src="/doctor.webp"
-          alt="doctor"
-          className="object-fill rounded-tl-2xl rounded-tr-2xl"
+      <div className="relative w-full h-45 lg:h-50 md:h-50 ">
+        <SafeImage
+          src={doctor?.image}
+          alt={doctor?.name}
           fill
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-tl-2xl rounded-tr-2xl"
         />
-        {isOnline && (
+        {doctor?.isOnline && (
           <span className="absolute top-3 right-3 text-[10px] px-2 py-1 rounded-full bg-emerald-500/90 text-white">
             Available
           </span>
         )}
         <Link
-          href={`/doctor/${toSlug(spesialitySlug as string)}/${toSlug(slug)}`}
+          href={"/"}
+          // href={`/doctor/${toSlug(doctor?.spesiality as string)}/${toSlug(doctor?.name)}`}
         >
-          <div className="absolute bottom-0 left-0 w-full px-3 py-2 bg-linear-to-t from-blue-400/15 via-white to-white/0">
-            <h3 className="text-sm font-semibold text-blue-900 leading-tight">
-              {name}
+          <div
+            className="
+    absolute bottom-0 left-0 w-full
+    px-3 py-2
+    bg-linear-to-t
+    from-white/50
+    via-slate-900/45
+    to-transparent
+    backdrop-blur-[2px]
+  "
+          >
+            <h3 className="text-sm font-semibold text-white leading-tight drop-shadow">
+              {doctor?.name}
             </h3>
-            <hr className="w-10 mt-0.5 mb-0.5 border-blue-300/40" />
-            <p className="text-xs text-gray-600">{specialty}</p>
+
+            <div className="w-10 h-0.5 rounded-full mt-0.5 mb-2" />
+
+            <p className="text-xs text-slate-200 font-medium tracking-wide">
+              {doctor?.spesiality}
+            </p>
           </div>
         </Link>
       </div>
 
       <div className="px-3 py-4 h-25">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between text-[11px] text-gray-600">
-            <span>Senin - Jumat</span>
-            <span className="font-medium text-gray-800">09.00 - 13.00</span>
-          </div>
-          <div className="flex items-center justify-between text-[11px] text-gray-600">
-            <span>Senin - Jumat</span>
-            <span className="font-medium text-gray-800">09.00 - 13.00</span>
-          </div>
+          {doctor?.schedules?.map((item, idx) => {
+            return (
+              <div
+                key={idx}
+                className="flex items-center justify-between text-[11px] text-gray-600"
+              >
+                <span>
+                  {getDayName(item?.day)} - {getDayName(item?.day)}
+                </span>
+                <span className="font-medium text-gray-800">
+                  {formatTime(item?.startTime)} - {formatTime(item?.endTime)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </motion.div>

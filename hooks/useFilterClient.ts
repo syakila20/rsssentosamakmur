@@ -1,92 +1,86 @@
 "use client";
 
+import { fetchPaginated } from "@/lib/fetcher";
 import { useState, useTransition } from "react";
-import { apiClient } from "@/lib/client/api-client";
 
 type Meta = {
   page: number;
-  totalPages: number;
+  limit: number;
   total: number;
+  totalPages: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
 };
 
-interface Params<T> {
+type Filters = Record<string, string | number>;
+
+interface UseFilterClientProps<T> {
   endpoint: string;
   initialData: T[];
-  initialFilters?: Record<string, string>;
+  initialMeta: Meta;
+  initialFilters?: Filters;
   limit?: number;
-  initialMeta?: Meta;
 }
 
 export function useFilterClient<T>({
   endpoint,
   initialData,
+  initialMeta,
   initialFilters = {},
   limit = 10,
-  initialMeta,
-}: Params<T>) {
+}: UseFilterClientProps<T>) {
   const [data, setData] = useState<T[]>(initialData);
-  const [filters, setFilters] = useState(initialFilters);
-  const [meta, setMeta] = useState<Meta | null>(initialMeta ?? null);
+
+  const [meta, setMeta] = useState<Meta>(initialMeta);
+
+  const [filters, setFilters] = useState<Filters>(initialFilters);
 
   const [isPending, startTransition] = useTransition();
+
+  async function fetchData(params: Filters) {
+    const res = await fetchPaginated<T>(endpoint, {
+      ...params,
+      limit, // ✅ FIX BUG
+    });
+
+    setData(res.data);
+
+    setMeta(res.meta);
+  }
 
   function updateFilter(key: string, value: string) {
     const next = {
       ...filters,
       [key]: value,
-      page: "1", // reset pagination saat filter berubah
+      page: 1,
     };
 
     setFilters(next);
 
-    startTransition(async () => {
-      const res = await apiClient<{
-        data: T[];
-        meta: Meta;
-      }>(endpoint, {
-        params: {
-          ...next,
-          limit,
-        },
-      });
-
-      setData(res.data);
-      setMeta(res.meta);
+    startTransition(() => {
+      fetchData(next);
     });
   }
 
   function changePage(page: number) {
     const next = {
       ...filters,
-      page: String(page),
+      page,
     };
 
     setFilters(next);
 
-    startTransition(async () => {
-      const res = await apiClient<{
-        data: T[];
-        meta: Meta;
-      }>(endpoint, {
-        params: {
-          ...next,
-          limit,
-        },
-      });
-
-      setData(res.data);
-      setMeta(res.meta);
+    startTransition(() => {
+      fetchData(next);
     });
   }
 
   return {
     data,
-    filters,
     meta,
+    filters,
+    isPending,
     updateFilter,
     changePage,
-    isPending,
   };
 }
