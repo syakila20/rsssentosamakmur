@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "maps.googleapis.com" },
+      { protocol: "https", hostname: "api.dicebear.com" },
     ],
   },
   allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev"],

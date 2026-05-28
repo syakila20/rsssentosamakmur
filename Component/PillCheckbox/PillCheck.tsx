@@ -24,14 +24,13 @@ export default function MotionCheckboxPill({
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="
       h-9
-      border-amber-600
-        cursor-pointer
+      border-white        cursor-pointer
         flex items-center gap-2
         px-3 py-1.5 rounded-full
         border-2 font-medium
         shadow-sm
         uppercase
-        text-xs lg:text-sm md:text-sm
+        text-xs
       "
     >
       {checked && (

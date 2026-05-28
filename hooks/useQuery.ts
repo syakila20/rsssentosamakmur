@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { useTransition } from "react";
 
-export function useQueryState({
+export function useQueryServer({
   pageKey,
   searchKey,
   categoryKey,
@@ -13,23 +13,57 @@ export function useQueryState({
   searchKey?: string;
   categoryKey?: string;
 }) {
+  const pathname = usePathname();
+
   const searchParams = useSearchParams();
+
   const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   const search = searchKey ? (searchParams.get(searchKey) ?? "") : "";
+
   const category = categoryKey ? (searchParams.get(categoryKey) ?? "") : "";
 
-  function update(params: Record<string, string | number | undefined>) {
+  function update(params: Record<string, string | number | undefined | null>) {
     const newParams = new URLSearchParams(searchParams.toString());
 
     Object.entries(params).forEach(([key, value]) => {
-      if (!value) newParams.delete(key);
-      else newParams.set(key, String(value));
+      if (value === undefined || value === null || value === "") {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, String(value));
+      }
     });
 
     startTransition(() => {
-      router.push(`?${newParams.toString()}`, { scroll: false });
+      router.push(`${pathname}?${newParams.toString()}`, {
+        scroll: false,
+      });
+    });
+  }
+
+  function setSearch(v: string) {
+    if (!searchKey) return;
+
+    update({
+      [searchKey]: v,
+      [pageKey]: 1,
+    });
+  }
+
+  function setCategory(v: string) {
+    if (!categoryKey) return;
+
+    update({
+      [categoryKey]: v,
+      [pageKey]: 1,
+    });
+  }
+
+  function setPage(page: number) {
+    update({
+      [pageKey]: page,
     });
   }
 
@@ -37,16 +71,8 @@ export function useQueryState({
     search,
     category,
     isPending,
-    setSearch: (v: string) =>
-      update({
-        [searchKey!]: v,
-        [pageKey]: 1,
-      }),
-
-    setCategory: (v: string) =>
-      update({
-        [categoryKey!]: v,
-        [pageKey]: 1,
-      }),
+    setSearch,
+    setCategory,
+    setPage,
   };
 }

@@ -10,7 +10,7 @@ export default async function ArticleSection() {
   const articles = await getArticles(
     new URLSearchParams({
       page: "1",
-      limit: "1",
+      limit: "6",
     }),
   );
 
@@ -18,7 +18,7 @@ export default async function ArticleSection() {
 
   return (
     <ArticleClient
-      initialData={articles.data as IArticleCard[]}
+      initialData={articles.data as []}
       initialMeta={articles.meta}
       categories={categories}
     />

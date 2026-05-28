@@ -14,17 +14,12 @@ export async function GET(req: Request, { params }: Params) {
 
     const article = await getArticleBySlug(slug);
 
-    return Response.json(apiResponse(article, null));
+    return apiResponse(article, null);
   } catch (err) {
-    return Response.json(
-      apiErrorResponse("Failed to fetch article", {
-        code: "ARTICLE_DETAIL_FAILED",
-        status: 404,
-        details: err,
-      }),
-      {
-        status: 404,
-      },
-    );
+    return apiErrorResponse("Failed to fetch article", {
+      code: "ARTICLE_DETAIL_FAILED",
+      status: 404,
+      details: err,
+    });
   }
 }

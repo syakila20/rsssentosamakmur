@@ -222,6 +222,33 @@ model DoctorExperience {
 //////////////////////
 // ARTICLE
 //////////////////////
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+}
+
+model ArticleTag {
+  articleId Int
+  tagId     Int
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  articles ArticleTag[]
+}
 
 model Article {
   id        Int     @id @default(autoincrement())
@@ -231,23 +258,27 @@ model Article {
   content   String  @db.NVarChar(Max)
   thumbnail String? @db.NVarChar(1000)
 
-  category String @db.NVarChar(100)
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
 
   published   Boolean   @default(false)
   publishedAt DateTime?
-  views       Int       @default(0)
+
+  views Int @default(0)
 
   authorId Int
   author   User @relation(fields: [authorId], references: [id])
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  deletedAt    DateTime?
-  articleViews ArticleView[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  @@index([authorId])
+  articleViews ArticleView[]
+  tags         ArticleTag[]
+
   @@index([published])
   @@index([views])
+  @@index([categoryId])
 }
 
 model ArticleView {
@@ -256,13 +287,15 @@ model ArticleView {
   articleId Int
   article   Article @relation(fields: [articleId], references: [id])
 
+  sessionId String?
+
   ipAddress String?
   userAgent String?
 
   createdAt DateTime @default(now())
 
   @@index([articleId])
-  @@index([createdAt])
+  @@index([sessionId])
 }
 
 //////////////////////

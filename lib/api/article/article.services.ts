@@ -3,25 +3,19 @@ import { buildMeta } from "@/lib/api/pagination";
 import { buildQuery } from "@/lib/query-builder";
 
 export async function getArticleCategories() {
-  const categories = await prisma.article.findMany({
-    where: {
-      published: true,
-
-      category: {
-        not: "",
-      },
-    },
-
-    distinct: ["category"],
+  const categories = await prisma.category.findMany({
+    where: {},
 
     select: {
-      category: true,
+      name: true,
+      slug: true,
+      id: true,
     },
   });
 
   return categories.map((c) => ({
-    label: c.category,
-    value: c.category,
+    label: c.name,
+    value: c?.slug,
   }));
 }
 
@@ -29,7 +23,13 @@ export async function getArticles(searchParams: URLSearchParams) {
   const query = buildQuery({
     searchParams,
     searchableFields: ["title", "excerpt"],
-    filterableFields: ["category"],
+    filterableFields: {
+      category: (value) => ({
+        category: {
+          slug: value,
+        },
+      }),
+    },
     sortableFields: ["createdAt"],
     defaultSort: "createdAt",
   });
@@ -50,9 +50,21 @@ export async function getArticles(searchParams: URLSearchParams) {
         title: true,
         slug: true,
         excerpt: true,
-        category: true,
+        categoryId: true,
+        articleViews: true,
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        author: {
+          select: {
+            name: true,
+          },
+        },
         thumbnail: true,
-        createdAt: true,
+        publishedAt: true,
       },
     }),
     prisma.article.count({ where }),
@@ -93,4 +105,101 @@ export async function getArticleBySlug(slug: string) {
   }
 
   return article;
+}
+
+export const trackArticleView = async (
+  slug: string,
+  sessionId: string,
+  ip?: string,
+  userAgent?: string,
+) => {
+  const article = await prisma.article.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
+
+  if (!article) return;
+
+  const exists = await prisma.articleView.findFirst({
+    where: {
+      articleId: article.id,
+      sessionId,
+    },
+  });
+
+  if (exists) return;
+
+  await prisma.articleView.create({
+    data: {
+      articleId: article.id,
+      sessionId,
+      ipAddress: ip,
+      userAgent,
+    },
+  });
+};
+
+export async function getPopularArticles(limit = 5) {
+  return prisma.article.findMany({
+    where: {
+      published: true,
+    },
+
+    orderBy: {
+      views: "desc",
+    },
+
+    take: limit,
+
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      thumbnail: true,
+      category: true,
+      views: true,
+      createdAt: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getRelatedArticles(
+  category: string,
+  currentSlug: string,
+) {
+  return prisma.article.findMany({
+    where: {
+      published: true,
+
+      // categoryId: 1,
+      category: {
+        slug: category,
+      },
+
+      slug: {
+        not: currentSlug,
+      },
+    },
+
+    take: 4,
+
+    orderBy: {
+      views: "desc",
+    },
+
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      thumbnail: true,
+      createdAt: true,
+      category: true,
+    },
+  });
 }

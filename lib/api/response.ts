@@ -1,12 +1,18 @@
-import { ApiError, ApiMeta, ApiResponse } from "@/types/type";
+import { ApiMeta } from "@/types/type";
 
 export function apiResponse<T>(data: T, meta: ApiMeta | null) {
-  return Response.json({
-    success: true,
-    data,
-    meta,
-  });
+  return Response.json(
+    {
+      success: true,
+      data,
+      meta,
+    },
+    {
+      status: 200,
+    },
+  );
 }
+
 export function apiErrorResponse(
   message: string,
   options?: {
@@ -14,12 +20,16 @@ export function apiErrorResponse(
     status?: number;
     details?: unknown;
   },
-): ApiError {
-  return {
-    success: false,
-    message,
-    code: options?.code,
-    status: options?.status,
-    details: options?.details,
-  };
+) {
+  return Response.json(
+    {
+      success: false,
+      message,
+      code: options?.code,
+      details: options?.details,
+    },
+    {
+      status: options?.status ?? 500,
+    },
+  );
 }

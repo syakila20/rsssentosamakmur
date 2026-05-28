@@ -1,62 +1,60 @@
 import { ApiResponse } from "@/types/type";
 
-export type FetchOptions = {
+export type ApiClientOptions = {
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   params?: Record<string, string | number | undefined>;
+  body?: unknown;
+  headers?: HeadersInit;
+  token?: string;
   cache?: RequestCache;
 };
 
-function buildQuery(params?: FetchOptions["params"]) {
-  const query = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined && value !== "") {
-      query.set(key, String(value));
-    }
-  });
-
-  const qs = query.toString();
-  return qs ? `?${qs}` : "";
-}
-
-// export async function apiClient<T>(
-//   endpoint: string,
-//   options?: FetchOptions,
-// ): Promise<T> {
-//   const baseUrl =
-//     typeof window === "undefined"
-//       ? process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-//       : "";
-
-//   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-//   const url = `${baseUrl}${cleanEndpoint}` + buildQuery(options?.params);
-
-//   const res = await fetch(url, {
-//     cache: options?.cache || "no-store",
-//   });
-
-//   if (!res.ok) {
-//     throw new Error(`API Error: ${res.status}`);
-//   }
-
-//   return res.json();
-// }
-
 export async function apiClient<T>(
-  url: string,
-  options?: FetchOptions,
+  endpoint: string,
+  options?: ApiClientOptions,
 ): Promise<ApiResponse<T>> {
-  const query = options?.params
+  const {
+    method = "GET",
+    params,
+    body,
+    headers,
+    token,
+    cache = "no-store",
+  } = options || {};
+
+  const query = params
     ? "?" +
       new URLSearchParams(
-        Object.entries(options.params).map(([k, v]) => [k, String(v)]),
-      ).toString()
+        Object.entries(params)
+          .filter(([, v]) => v !== undefined && v !== "")
+          .map(([k, v]) => [k, String(v)]),
+      )
     : "";
 
-  const res = await fetch(url + query);
+  const res = await fetch(endpoint + query, {
+    method,
+    cache,
+
+    headers: {
+      "Content-Type": "application/json",
+
+      ...(token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {}),
+
+      ...headers,
+    },
+
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const json = await res.json();
 
   if (!res.ok) {
-    throw new Error("API Error");
+    throw new Error(json?.message || "API Error");
   }
 
-  return res.json();
+  return json;
 }
