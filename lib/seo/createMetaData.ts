@@ -6,14 +6,14 @@ export function createMetadata({
   title,
   description,
   path,
-  locale = "id",
   image,
   noIndex = false,
   type = "website",
+  keywords,
 }: MetaInput): Metadata {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
-  const url = `${SITE_URL}/${locale}${cleanPath}`;
+  const url = `${SITE_URL}/${cleanPath}`;
 
   const ogImage = image || `${SITE_URL}${DEFAULT_OG}`;
 
@@ -40,13 +40,13 @@ export function createMetadata({
           index: true,
           follow: true,
         },
+    keywords: keywords,
 
     openGraph: {
       title,
       description,
       url,
       siteName: SITE_NAME,
-      locale,
       type,
 
       images: [

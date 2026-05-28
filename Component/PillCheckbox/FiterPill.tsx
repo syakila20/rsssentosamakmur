@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MotionCheckboxPill from "./PillCheck";
 import { useMediaQuery } from "@/lib/useMediaQuery";
-import { IOption } from "@/lib/interface";
+import { IOption } from "@/types/type";
 
 interface Props {
   selected: string[] | string;

@@ -1,7 +1,3 @@
-import {
-  getArticleCategories,
-  getArticles,
-} from "@/lib/api/article/article.services";
 import DoctorClient from "./DoctorClient";
 import { getDoctors } from "@/lib/api/doctor/doctors.service";
 
@@ -13,11 +9,10 @@ export default async function DoctorSection() {
     }),
   );
 
-  const categories = await getArticleCategories();
   return (
     <DoctorClient
       initialData={initialDoctors?.data as []}
-      categories={categories as []}
+      categories={[]}
       initialMeta={initialDoctors?.meta}
     />
   );

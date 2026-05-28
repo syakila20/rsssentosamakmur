@@ -2,14 +2,14 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import SafeImage from "../SafeImage/SafeImage";
-import { formatDate } from "@/lib/helperDate";
 interface BlogCardProps {
   title: string;
   excerpt: string;
   image: string;
-  category: string;
-  date: string | Date;
+  category?: string;
+  date: string;
   slug: string;
+  author?: string;
 }
 
 export default function BlogCard({
@@ -19,8 +19,9 @@ export default function BlogCard({
   category,
   date,
   slug,
+  author,
 }: BlogCardProps) {
-  console.log("??imgage", image);
+  console.log("??date", date);
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -29,45 +30,43 @@ export default function BlogCard({
     >
       <div className="relative h-25 lg:h-40 md:h-35 overflow-hidden">
         <Link href={`/article/${slug}`} className="cursor-pointer">
-          <div className="relative h-40 w-auto">
+          <div className="relative h-40 w-auto overflow-hidden">
             <SafeImage
               src={image}
               alt={title}
               fill
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover brightness-75 group-hover:brightness-90 transition"
             />
+
+            <div className="absolute inset-0 bg-black/10" />
           </div>
         </Link>
-        <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-medium bg-emerald-500/90 text-white backdrop-blur uppercase">
+        <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-white backdrop-blur uppercase">
           {category}
         </span>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/30 via-black/0 to-transparent" />
       </div>
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col gap-3">
         <Link href={`/article/${slug}`} className="cursor-pointer">
           <h3 className="text-base font-semibold text-slate-700/80 leading-snug line-clamp-2 xl:h-12 md:h-12 ">
             {title}
           </h3>
         </Link>
-        <p className="text-[9.5pt] text-slate-400 line-clamp-2 xl:h-10 md:h-10">
-          {excerpt}
-        </p>
+        {excerpt && (
+          <p className="text-[9.5pt] text-slate-400 line-clamp-2 xl:h-10 md:h-10">
+            {excerpt}
+          </p>
+        )}
       </div>
-      <div className="-mt-5 px-4 py-2 flex md:flex-row lg:flex-row xl:flex-row flex-col justify-between  gap-1 text-xs text-gray-400 w-full">
-        <div className="flex items-center gap-1">
-          <div className="rounded-2xl text-xs flex items-center text-blue-600/90">
-            Kesling RS
-          </div>
-          <span>•</span>
-          <span>{formatDate(date, "short")}</span>
-        </div>
+      <div className="-mt-3 px-4 py-2 flex flex-nowrap justify-between text-xs text-gray-400 w-full">
+        <span>{date}</span>
         <Link
-          className="py-1 text-center text-emerald-700"
+          className="text-center text-emerald-700 "
           href={`/article/${slug}`}
         >
-          Baca..
+          Selengkapnya
         </Link>
       </div>
     </motion.article>

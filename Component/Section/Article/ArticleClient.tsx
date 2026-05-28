@@ -6,6 +6,9 @@ import Pagination from "@/Component/pagination/Pagination";
 import Title from "@/Component/Title/Title";
 import { useFilterClient } from "@/hooks/useFilterClient";
 import { IArticleCard, IOption, SectionClientProps } from "@/types/type";
+import { formatDate } from "@/lib/helperDate";
+import Loading from "@/Component/Loading/Loading";
+import EmptyData from "@/Component/NoData/EmptyData";
 
 type Props = SectionClientProps<IArticleCard, IOption>;
 
@@ -26,7 +29,7 @@ export default function ArticleClient({
     initialData: initialData,
     initialMeta,
 
-    limit: 1,
+    limit: 6,
   });
 
   return (
@@ -55,16 +58,14 @@ export default function ArticleClient({
         />
       </div>
 
-      {/* LOADING */}
-      {isPending && <p className="text-sm text-gray-500 mb-4">Loading...</p>}
-
-      {/* ARTICLES */}
+      {isPending && <Loading />}
+      {articles.length === 0 && <EmptyData />}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-5">
         {articles.map((article) => (
           <BlogCard
             key={article.slug}
-            category={article.category}
-            date={article.createdAt}
+            category={article.category?.name}
+            date={formatDate(article?.publishedAt as Date, "text")}
             excerpt={article.excerpt}
             image={article.thumbnail}
             slug={article.slug}

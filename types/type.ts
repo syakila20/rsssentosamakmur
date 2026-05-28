@@ -51,9 +51,14 @@ export interface IArticleCard {
   title: string;
   slug: string;
   excerpt: string;
-  category: string;
+  category?: {
+    name: string;
+    slug: string;
+  };
   createdAt: Date;
   thumbnail: string;
+  author?: string;
+  publishedAt?: Date;
 }
 export interface ArticleSearchParams {
   articlePage?: string;
@@ -88,11 +93,14 @@ export interface IDoctorCard {
   spesialitySlug?: string;
   schedules: ISchedule[];
 }
+export type FilterableFields<TWhere> =
+  | string[]
+  | Record<string, (value: string) => Partial<TWhere>>;
 
 export type BuildQueryOptions<TWhere = Record<string, unknown>> = {
   searchParams: URLSearchParams;
   searchableFields?: string[];
-  filterableFields?: string[];
+  filterableFields?: FilterableFields<TWhere>;
   sortableFields?: string[];
   defaultSort?: string;
 };
@@ -117,14 +125,10 @@ export interface SectionClientProps<T, TFilter = unknown> {
 export type MetaInput = {
   title: string;
   description: string;
-
   path: string;
-
   locale?: string;
-
   image?: string;
-
   noIndex?: boolean;
-
   type?: "website" | "article" | "profile";
+  keywords?: string[];
 };

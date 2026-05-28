@@ -6,6 +6,63 @@ import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
+  const tags = [
+    { name: "Imunisasi", slug: "imunisasi" },
+    { name: "Vaksin", slug: "vaksin" },
+    { name: "Demam", slug: "demam" },
+    { name: "Batuk & Flu", slug: "batuk-flu" },
+    { name: "Diabetes", slug: "diabetes" },
+    { name: "Hipertensi", slug: "hipertensi" },
+    { name: "Vitamin", slug: "vitamin" },
+    { name: "ASI", slug: "asi" },
+    { name: "Tumbuh Kembang", slug: "tumbuh-kembang" },
+    { name: "Kesehatan Mental", slug: "mental-health" },
+  ];
+
+  for (const tag of tags) {
+    await prisma.tag.upsert({
+      where: { slug: tag.slug },
+      update: {},
+      create: tag,
+    });
+  }
+  const categories = [
+    {
+      name: "Kesehatan Anak",
+      slug: "kesehatan-anak",
+    },
+    {
+      name: "Kesehatan Ibu & Kehamilan",
+      slug: "kesehatan-ibu-kehamilan",
+    },
+    {
+      name: "Penyakit & Kondisi Medis",
+      slug: "penyakit-kondisi-medis",
+    },
+    {
+      name: "Obat & Pengobatan",
+      slug: "obat-pengobatan",
+    },
+    {
+      name: "Gaya Hidup Sehat",
+      slug: "gaya-hidup-sehat",
+    },
+    {
+      name: "Nutrisi & Makanan",
+      slug: "nutrisi-makanan",
+    },
+    {
+      name: "Kesehatan Mental",
+      slug: "kesehatan-mental",
+    },
+  ];
+  for (const cat of categories) {
+    await prisma.category.upsert({
+      where: { slug: cat.slug },
+      update: {},
+      create: cat,
+    });
+  }
   // permissions
   for (const p of PERMISSIONS) {
     await prisma.permission.upsert({
