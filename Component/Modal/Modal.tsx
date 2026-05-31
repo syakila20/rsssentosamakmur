@@ -26,7 +26,6 @@ export default function Modal({
       ? document.getElementById("modal-root")
       : null;
 
-  // ✅ Lock body scroll
   useEffect(() => {
     if (!isOpen) return;
 
@@ -68,7 +67,7 @@ export default function Modal({
 
           {/* Wrapper */}
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-re"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -79,7 +78,7 @@ export default function Modal({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex justify-between items-center px-5 py-2 border-b border-b-slate-200">
+              <div className="flex justify-between items-center px-5 py-5 border-b border-b-slate-200">
                 <h2 className="text-base lg:text-[18pt] xl:text-[18pt] md:text-[18pt] font-semibold text-slate-700">
                   {title}
                 </h2>

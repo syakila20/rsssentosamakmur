@@ -21,7 +21,7 @@ export default function DoctorCard({ doctor }: IObjDoctor) {
     >
       <div className="relative w-full h-45 lg:h-50 md:h-50 ">
         <SafeImage
-          src={doctor?.image}
+          src={doctor?.image || ""}
           alt={doctor?.name}
           fill
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-tl-2xl rounded-tr-2xl"
@@ -32,8 +32,7 @@ export default function DoctorCard({ doctor }: IObjDoctor) {
           </span>
         )}
         <Link
-          href={"/"}
-          // href={`/doctor/${toSlug(doctor?.spesiality as string)}/${toSlug(doctor?.name)}`}
+          href={`/doctor/${toSlug(doctor?.specialty?.label as string)}/${toSlug(doctor?.name)}`}
         >
           <div
             className="
@@ -46,14 +45,13 @@ export default function DoctorCard({ doctor }: IObjDoctor) {
     backdrop-blur-[2px]
   "
           >
-            <h3 className="text-sm font-semibold text-white leading-tight drop-shadow">
+            <h3 className="text-sm font-semibold text-slate-100 leading-tight drop-shadow">
               {doctor?.name}
             </h3>
 
             <div className="w-10 h-0.5 rounded-full mt-0.5 mb-2" />
-
             <p className="text-xs text-slate-200 font-medium tracking-wide">
-              {doctor?.spesiality}
+              {doctor?.specialty?.label}
             </p>
           </div>
         </Link>
@@ -61,21 +59,22 @@ export default function DoctorCard({ doctor }: IObjDoctor) {
 
       <div className="px-3 py-4 h-25">
         <div className="flex flex-col gap-2">
-          {doctor?.schedules?.map((item, idx) => {
-            return (
+          {doctor?.schedules
+            ?.slice()
+            .sort((a, b) => a.day - b.day)
+            .map((item, idx) => (
               <div
                 key={idx}
                 className="flex items-center justify-between text-[11px] text-gray-600"
               >
-                <span>
-                  {getDayName(item?.day)} - {getDayName(item?.day)}
-                </span>
-                <span className="font-medium text-gray-800">
+                <div className="flex flex-nowrap">
+                  <span className="w-8">{getDayName(item?.day)}</span>
+                </div>
+                <div className="font-medium text-gray-800">
                   {formatTime(item?.startTime)} - {formatTime(item?.endTime)}
-                </span>
+                </div>
               </div>
-            );
-          })}
+            ))}
         </div>
       </div>
     </motion.div>
