@@ -13,19 +13,20 @@ const itemVariants = {
 };
 
 const MENU_ITEMS = [
-  { key: "about", href: "/about" },
-  { key: "blog", href: "/blog" },
-  { key: "career", href: "/career" },
+  { label: "Tentang Kami", key: "about", href: "/about" },
+  { label: "Artikel", key: "article", href: "/article" },
+  { label: "Karir", key: "career", href: "/career" },
   {
+    label: "Promo",
     key: "promo",
     href: "/promo",
   },
 ];
 
 const TOP_MENU = [
-  { key: "emergency", href: "/igd" },
-  { key: "findDoctor", href: "/doctor" },
-  { key: "mcu", href: "/promo" },
+  { label: "Emergency", key: "emergency", href: "/igd" },
+  { label: "Cari Dokter", key: "findDoctor", href: "/doctor" },
+  { label: "MCU", key: "mcu", href: "/promo" },
 ];
 
 export default function Navbar() {
@@ -77,7 +78,7 @@ export default function Navbar() {
                   : "text-white hover:text-gray-300",
               )}
             >
-              {item.key}
+              {item.label}
             </Link>
           ))}
         </div>
@@ -134,7 +135,7 @@ export default function Navbar() {
                   href={item.href || "#"}
                   className={` ${isSolid || isNotHome ? "text-gray-600 hover:text-neutral-500 " : "text-white hover:text-white/30"}`}
                 >
-                  {item?.key}
+                  {item?.label}
                 </a>
                 <span
                   className={clsx(
@@ -235,7 +236,7 @@ export default function Navbar() {
                   </button>
                 ) : (
                   <Link href={item?.href} onClick={closeModal}>
-                    {item.key}
+                    {item.label}
                   </Link>
                 )}
 

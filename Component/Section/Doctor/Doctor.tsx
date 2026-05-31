@@ -1,5 +1,8 @@
 import DoctorClient from "./DoctorClient";
-import { getDoctors } from "@/lib/api/doctor/doctors.service";
+import {
+  getDoctors,
+  getDoctorsSpecialty,
+} from "@/lib/api/doctor/doctors.service";
 
 export default async function DoctorSection() {
   const initialDoctors = await getDoctors(
@@ -8,11 +11,12 @@ export default async function DoctorSection() {
       page: "1",
     }),
   );
+  const categories = await getDoctorsSpecialty();
 
   return (
     <DoctorClient
       initialData={initialDoctors?.data as []}
-      categories={[]}
+      categories={categories}
       initialMeta={initialDoctors?.meta}
     />
   );

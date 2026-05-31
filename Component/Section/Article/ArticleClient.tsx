@@ -34,7 +34,6 @@ export default function ArticleClient({
 
   return (
     <section className="relative overflow-hidden w-[95%] md:w-[85%] xl:w-[85%] mx-auto py-4">
-      {/* HEADER */}
       <div className="flex justify-between md:flex-row lg:flex-row flex-col">
         <div className="h-25">
           <Title title="Blog" linkTo="/article" />
@@ -46,7 +45,6 @@ export default function ArticleClient({
         </span>
       </div>
 
-      {/* FILTER */}
       <div className="mt-4 mb-4">
         <FilterPill
           arrPill={categories as []}
@@ -74,7 +72,7 @@ export default function ArticleClient({
         ))}
       </div>
 
-      {/* PAGINATION */}
+      {/* PAGINATION
       <div className="mt-10">
         <Pagination
           page={meta.page}
@@ -85,7 +83,7 @@ export default function ArticleClient({
           onNext={() => changePage(meta.page + 1)}
           onPrev={() => changePage(meta.page - 1)}
         />
-      </div>
+      </div> */}
     </section>
   );
 }

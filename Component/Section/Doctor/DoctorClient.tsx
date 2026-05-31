@@ -3,24 +3,18 @@
 import FilterPill from "@/Component/PillCheckbox/FiterPill";
 import Title from "@/Component/Title/Title";
 import { useFilterClient } from "@/hooks/useFilterClient";
-import { IDoctorCard, IOption, SectionClientProps } from "@/types/type";
+import { IDoctorCardSpec, IPropDoctors } from "@/types/type";
 import DoctorCard from "./CardDoctor";
+import PaginationClient from "@/Component/pagination/PaginationClient";
+import Loading from "@/Component/Loading/Loading";
 // import PaginationClient from "@/Component/pagination/PaginationClient";
-
-interface IDoctorCardSpec extends IDoctorCard {
-  specialty: {
-    label: string;
-    slug: string;
-  };
-}
-
-type Props = SectionClientProps<IDoctorCardSpec, IOption>;
 
 export default function DoctorClient({
   initialData,
   initialMeta,
   categories,
-}: Props) {
+  showPagination,
+}: IPropDoctors) {
   const {
     data: doctors,
     meta,
@@ -33,7 +27,7 @@ export default function DoctorClient({
     initialData: initialData,
     initialMeta,
 
-    limit: 1,
+    limit: 10,
   });
   return (
     <section className="relative overflow-hidden w-[95%] md:w-[85%] xl:w-[85%] mx-auto py-4">
@@ -59,22 +53,24 @@ export default function DoctorClient({
         />
       </div>
 
-      {isPending && <p className="text-sm text-gray-500 mb-4">Loading...</p>}
+      {isPending && <Loading />}
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-5">
-        {doctors.map((doctor, idx) => (
-          <DoctorCard key={idx} doctor={doctor} />
+        {doctors.map((doctor) => (
+          <DoctorCard key={doctor?.id} doctor={doctor} />
         ))}
       </div>
-      {/* <PaginationClient
-        page={meta.page}
-        totalPages={meta.totalPages}
-        hasNextPage={meta.hasNextPage}
-        hasPreviousPage={meta.hasPreviousPage}
-        isPending={isPending}
-        onNext={() => changePage(meta.page + 1)}
-        onPrev={() => changePage(meta.page - 1)}
-      /> */}
+      {showPagination && (
+        <PaginationClient
+          page={meta.page}
+          totalPages={meta.totalPages}
+          hasNextPage={meta.hasNextPage}
+          hasPreviousPage={meta.hasPreviousPage}
+          isPending={isPending}
+          onNext={() => changePage(meta.page + 1)}
+          onPrev={() => changePage(meta.page - 1)}
+        />
+      )}
     </section>
   );
 }

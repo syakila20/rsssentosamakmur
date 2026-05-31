@@ -4,7 +4,6 @@ import {
 } from "@/lib/api/article/article.services";
 
 import ArticleClient from "./ArticleClient";
-import { IArticleCard } from "@/types/type";
 
 export default async function ArticleSection() {
   const articles = await getArticles(

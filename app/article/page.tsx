@@ -4,6 +4,7 @@ import {
   getPopularArticles,
 } from "@/lib/api/article/article.services";
 import ArticleClient from "./Client";
+import { IArticleCard } from "@/types/type";
 
 interface Props {
   searchParams: Promise<{
@@ -26,7 +27,7 @@ export default async function ArticlePage({ searchParams }: Props) {
       initialData={articles.data as []}
       initialMeta={articles.meta}
       categories={categories}
-      initialDataPopular={articlesPopular[0]}
+      initialDataPopular={articlesPopular[0] as IArticleCard}
     />
   );
 }
