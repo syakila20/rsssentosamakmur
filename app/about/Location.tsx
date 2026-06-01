@@ -15,15 +15,7 @@ import {
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// ==============================
-// HOSPITAL LOCATION
-// ==============================
-
 const hospital: [number, number] = [0.4512206939985392, 101.4482731309308];
-
-// ==============================
-// LOCATION HANDLER
-// ==============================
 
 function LocationHandler({
   setPosition,
@@ -49,10 +41,6 @@ function LocationHandler({
 
 export default function LocationPage() {
   const [position, setPosition] = useState<LatLng | null>(null);
-
-  // ==============================
-  // ICONS
-  // ==============================
 
   const hospitalIcon = useMemo(() => {
     return new L.Icon({

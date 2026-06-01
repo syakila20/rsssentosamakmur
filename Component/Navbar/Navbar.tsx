@@ -5,14 +5,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import Image from "next/image";
 import { getLastPathname } from "@/lib/getPath";
-import { useMediaQuery } from "@/lib/useMediaQuery";
+import { IMenuItem } from "@/types/type";
 
+interface IMenuItemWithChildren extends IMenuItem {
+  children?: IMenuItem[];
+}
 const itemVariants = {
   hidden: { opacity: 0, y: -4 },
   visible: { opacity: 1, y: 0 },
 };
-
-const MENU_ITEMS = [
+const MENU_ITEMS: IMenuItemWithChildren[] = [
   { label: "Tentang Kami", key: "about", href: "/about" },
   { label: "Artikel", key: "article", href: "/article" },
   { label: "Karir", key: "career", href: "/career" },
@@ -20,6 +22,7 @@ const MENU_ITEMS = [
     label: "Promo",
     key: "promo",
     href: "/promo",
+    children: [],
   },
 ];
 
@@ -169,10 +172,10 @@ export default function Navbar() {
                           initial="hidden"
                           animate="visible"
                           exit="hidden"
-                          href={sub.href}
+                          href={sub?.href}
                           className="block px-4 py-2 text-xs hover:bg-white/10"
                         >
-                          {sub.key}
+                          {sub?.key}
                         </motion.a>
                       ))}
                     </motion.div>
@@ -235,7 +238,7 @@ export default function Navbar() {
                     {item.children && <span>▾</span>}
                   </button>
                 ) : (
-                  <Link href={item?.href} onClick={closeModal}>
+                  <Link href={item?.href || "/"} onClick={closeModal}>
                     {item.label}
                   </Link>
                 )}

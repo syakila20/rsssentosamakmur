@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import {
   getArticles,
   getArticleCategories,

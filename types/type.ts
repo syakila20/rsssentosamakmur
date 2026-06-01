@@ -251,7 +251,7 @@ export const changeEnumEmployeType = {
   FULL_TIME: "Penuh Waktu",
   PART_TIME: "Paruh Waktu",
   CONTRACT: "Kontrak",
-};
+} as const;
 
 const departments = [
   "Dokter Spesialis",
@@ -279,3 +279,9 @@ export interface IDoctorCardSpec extends IDoctorCard {
 }
 
 export type IPropDoctors = SectionClientProps<IDoctorCardSpec, IOption>;
+
+export interface IMenuItem {
+  label?: string;
+  key?: string;
+  href?: string;
+}
