@@ -23,6 +23,7 @@ import {
 } from "@/lib/contentDetail";
 import LinkBack from "@/Component/LinkBack/LinkBack";
 import ArticleToc from "@/Component/Section/Article/TocActive";
+import { SITE_URL } from "@/lib/seo/constant";
 
 interface Props {
   params: Promise<{
@@ -43,6 +44,7 @@ export async function generateMetadata({ params }: Props) {
     path: `/article/${article.slug}`,
     image: article.thumbnail || "",
     type: "article",
+    canonical: `${SITE_URL}/article/${article?.slug}`,
 
     keywords: [
       article.category?.name,

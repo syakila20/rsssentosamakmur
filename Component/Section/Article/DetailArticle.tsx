@@ -25,7 +25,7 @@ export default function BlogDetail(props: Props) {
         </span>
         <span className="inline-flex items-center gap-2  relative h-7 px-3 py-1 text-[8pt] font-medium rounded-full bg-neutral-100 text-slate-400 uppercase">
           <SafeImage
-            src={props?.profile}
+            src={props?.profile || ""}
             alt={props?.publishBy}
             width={2}
             height={2}

@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import LocationPage from "../location/page";
 import FacilitySection from "./FasilitasUmum";
+import clsx from "clsx";
+import SvgChevronLeft from "@/Icon/Chevron";
 
 const timelineData = [
   {
@@ -262,10 +264,13 @@ export default function HospitalHero() {
             </div>
           </div>
 
-          <div className="relative min-h-50 border flex w-full ">
+          <div className="relative min-h-50 flex w-full ">
             <div className="flex flex-none ">
-              <button className="cursor-pointer border" onClick={prev}>
-                Prev
+              <button
+                className="transition  text-emerald-600 cursor-pointer"
+                onClick={prev}
+              >
+                <SvgChevronLeft className="" height="30" />
               </button>
             </div>
             <AnimatePresence mode="wait">
@@ -275,23 +280,26 @@ export default function HospitalHero() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="text-center flex-auto border border-amber-600"
+                className="text-center flex-auto "
               >
                 <h3 className="text-xl font-semibold text-emerald-600">
                   {timelineData[active].year}
                 </h3>
 
-                <h4 className="text-lg font-semibold text-slate-800 mt-1">
+                <h4 className="text-lg font-semibold text-slate-700 mt-1">
                   {timelineData[active].title}
                 </h4>
 
-                <p className="text-gray-600 mt-2 max-w-xl mx-auto">
+                <p className="text-slate-500 mt-2 max-w-xl mx-auto">
                   {timelineData[active].desc}
                 </p>
               </motion.div>
-              <div className="flex border flex-none cursor-pointer">
-                <button className="cursor-pointer border" onClick={next}>
-                  Next
+              <div className="flex  flex-none cursor-pointer">
+                <button
+                  className="transition  text-emerald-600 cursor-pointer"
+                  onClick={next}
+                >
+                  <SvgChevronLeft className="rotate-180" height="30" />
                 </button>
               </div>
             </AnimatePresence>

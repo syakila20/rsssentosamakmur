@@ -10,10 +10,11 @@ export function createMetadata({
   noIndex = false,
   type = "website",
   keywords,
+  canonical,
 }: MetaInput): Metadata {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
-  const url = `${SITE_URL}/${cleanPath}`;
+  const url = new URL(cleanPath, SITE_URL).toString();
 
   const ogImage = image || `${SITE_URL}${DEFAULT_OG}`;
 
@@ -28,7 +29,7 @@ export function createMetadata({
     description,
 
     alternates: {
-      canonical: url,
+      canonical: canonical ?? url,
     },
 
     robots: noIndex

@@ -8,6 +8,9 @@ import {
 } from "@/lib/api/doctor/doctors.service";
 import { IDoctorCard } from "@/types/type";
 import DoctorDetail from "./Detail";
+import { createMetadata } from "@/lib/seo/createMetaData";
+import { SITE_URL } from "@/lib/seo/constant";
+import { doctorJsonLd } from "@/lib/seo/builder/doctor";
 
 interface Props {
   params: Promise<{
@@ -15,19 +18,50 @@ interface Props {
   }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+
+  const doctor = await getDoctorBySlug(slug);
+  if (!doctor) return {};
+  return createMetadata({
+    title: `Dokter ${doctor?.name} Spesialis ${doctor?.specialty?.label}`,
+    description: `${doctor?.bio}`,
+    path: `/doctor/${slug[0]}/${slug[1]}`,
+    canonical: `${SITE_URL}/doctor/${slug[0]}/${slug[1]}`,
+    type: "profile",
+    image: doctor?.image,
+    keywords: [doctor?.specialty?.slug],
+  });
+}
+
 const Page = async ({ params }: Props) => {
   const { slug } = await params;
   const doctor = await getDoctorBySlug(slug);
   if (!doctor) return notFound();
   const relatedDoctors = await getRelatedDoctorBySlug(slug);
+  const jsonLd = doctorJsonLd({
+    name: doctor.name,
+    slug: doctor.slug,
+    specialty: doctor.specialty?.label,
+    image: doctor.image,
+    location: "PEKANBARU",
+  });
   return (
-    <section className="w-[94%] md:w-[85%] xl:w-[85%] mx-auto pt-40 bg-linear-to-br from-fuchsia-50 to-teal-50 relative py-4 h-auto">
-      <DoctorDetail doctor={doctor} />
-      <ListDokterRelated
-        doctor={relatedDoctors as IDoctorCard[]}
-        category={slug[0]}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd),
+        }}
       />
-    </section>
+      <section className="w-[94%] md:w-[85%] xl:w-[85%] mx-auto pt-40 bg-linear-to-br from-fuchsia-50 to-teal-50 relative py-4 h-auto">
+        <DoctorDetail doctor={doctor} />
+        <ListDokterRelated
+          doctor={relatedDoctors as IDoctorCard[]}
+          category={slug[0]}
+        />
+      </section>
+    </>
   );
 };
 export default Page;
