@@ -164,6 +164,7 @@ export type MetaInput = {
   noIndex?: boolean;
   type?: "website" | "article" | "profile";
   keywords?: string[];
+  canonical?: string;
 };
 export type JobWhereInput = {
   id?: string;

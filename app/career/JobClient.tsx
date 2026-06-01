@@ -82,13 +82,15 @@ export default function JobsClient({
               linkTo="/"
             />
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-slate-700">
-              Join Our Healthcare Mission
-            </h1>
+            <h2 className="text-3xl md:text-3xl font-bold mb-6 leading-tight text-slate-700">
+              Bergabunglah dengan Tim Profesional Kami
+            </h2>
 
-            <p className="text-lg text-neutral-600 max-w-2xl">
-              Be part of a compassionate team dedicated to excellence in patient
-              care. We value teamwork, integrity, and innovation.
+            <p className="text-lg text-neutral-600">
+              Berkarya dalam lingkungan kerja yang mengutamakan pelayanan
+              pasien, profesionalisme, integritas, dan inovasi. Bersama kami,
+              Anda dapat mengembangkan karier sekaligus memberikan kontribusi
+              nyata bagi kesehatan masyarakat.
             </p>
           </motion.div>
 
