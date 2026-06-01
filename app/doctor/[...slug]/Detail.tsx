@@ -20,7 +20,7 @@ export default function DoctorDetail({ doctor }: Props) {
   );
 
   return (
-    <section className="min-h-screen w-[94%] md:w-[85%] xl:w-[85%] mx-auto pt-40 bg-linear-to-br from-fuchsia-50 to-teal-50 relative">
+    <section className="min-h-screen w-[94%] md:w-[95%] xl:w-[95%] mx-auto bg-linear-to-br from-fuchsia-50 to-teal-50 relative">
       <LinkBack
         title={
           <span className="inline-block text-sm px-4 py-1 border border-emerald-800/50 rounded-full text-emerald-800/50">
@@ -29,7 +29,7 @@ export default function DoctorDetail({ doctor }: Props) {
         }
         linkTo="/doctor"
       />
-      <div className="grid lg:grid-cols-3 gap-14 mt-4">
+      <div className="grid lg:grid-cols-3 gap-5 mt-4">
         <div className="lg:col-span-2 space-y-12">
           <div className="flex flex-col lg:flex-row gap-10">
             <div className="w-full lg:w-72 shrink-0">
@@ -131,7 +131,7 @@ export default function DoctorDetail({ doctor }: Props) {
         </div>
 
         <aside>
-          <div className="sticky top-28 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="sticky top-28 rounded-3xl border border-slate-200 bg-white shadow-sm p-6">
             <h2 className="text-xl font-bold text-slate-700">
               Buat Janji Konsultasi
             </h2>

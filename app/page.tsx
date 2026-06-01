@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import Appointment from "@/Component/AppoitmentBanner";
 import ArticleSection from "@/Component/Section/Article/Article";
 import DoctorSection from "@/Component/Section/Doctor/Doctor";

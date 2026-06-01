@@ -122,7 +122,11 @@ export default function JobDetail({ job }: IJobDetail) {
             </div>
             <div className="flex flex-wrap gap-4 text-sm text-slate-600">
               <div className="bg-slate-200 px-3 py-1 rounded-full">
-                {changeEnumEmployeType[job.employmentType]}
+                {
+                  changeEnumEmployeType[
+                    job.employmentType as keyof typeof changeEnumEmployeType
+                  ]
+                }
               </div>
 
               <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
