@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,52 +8,56 @@ export default function NotFound() {
     const url = "https://www.flaticon.com/free-icons/page-not-found";
     window.open(url, "_blank", "noopener,noreferrer");
   };
+
   return (
-    <section className="bg-linear-to-br from-fuchsia-50 to-teal-50 relative overflow-hidden py-4 h-screen flex justify-center items-center  ">
-      <section className="min-h-screen flex items-center justify-center bg-gray-50 px-6 flex-col">
-        <div className="flex relative w-90 h-100">
+    <section className="bg-gradient-to-br from-fuchsia-50 to-teal-50 min-h-screen flex items-center justify-center">
+      <div className="max-w-2xl w-full flex flex-col items-center text-center">
+        <div className="relative w-60 h-60 md:w-75 md:h-75">
           <Image
             onClick={handleOpenTab}
             src="/success.png"
             fill
-            className="object-fill"
-            alt="Page not found icons created by Roundicons Premium - Flaticon"
+            priority
+            sizes="(max-width: 768px) 320px, 384px"
+            className="object-contain"
+            alt="Halaman tidak ditemukan"
           />
         </div>
-        <div className="text-center max-w-lg">
-          <span className="text-zinc-800 text-center w-full text-1xl">
-            We’re sorry, the page you are looking for could{" "}
-            <span className="text-emerald-500 font-bold">not be found.</span>
-          </span>
 
-          <p className="mt-3 text-gray-500">
-            It may have been moved or is no longer available.
-          </p>
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-700">
+          Halaman Tidak Dapat Diakses
+        </h1>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/"
-              className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
-            >
-              Back to Home
-            </Link>
+        <p className="mt-4 text-base text-gray-400 leading-relaxed max-w-xl">
+          Mohon maaf, halaman yang Anda cari saat ini tidak tersedia.
+          Kemungkinan halaman telah dipindahkan, diperbarui, atau sudah tidak
+          lagi tersedia. Silakan gunakan menu di bawah untuk melanjutkan
+          pencarian informasi dan layanan kesehatan yang Anda butuhkan.
+        </p>
 
-            <Link
-              href="/doctor"
-              className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
-            >
-              Find Doctor
-            </Link>
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href="/"
+            className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
+          >
+            Back to Home
+          </Link>
 
-            <Link
-              href="/blog"
-              className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
-            >
-              Blogs
-            </Link>
-          </div>
+          <Link
+            href="/doctor"
+            className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
+          >
+            Find Doctor
+          </Link>
+
+          <Link
+            href="/blog"
+            className="px-4 text-emerald-600 py-1.5 rounded-xl hover:bg-emerald-700 hover:text-white transition duration-300"
+          >
+            Blogs
+          </Link>
         </div>
-      </section>
+      </div>
     </section>
   );
 }

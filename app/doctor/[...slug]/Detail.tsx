@@ -3,7 +3,7 @@
 import useDoctorBooking from "@/hooks/doctor/useDoctorBooking";
 import { IDoctorCard } from "@/types/type";
 import SafeImage from "@/Component/SafeImage/SafeImage";
-import { formatTime } from "@/lib/helperDate";
+import { formatDate, formatTime } from "@/lib/helperDate";
 import LinkBack from "@/Component/LinkBack/LinkBack";
 
 interface Props {
@@ -12,12 +12,6 @@ interface Props {
 
 export default function DoctorDetail({ doctor }: Props) {
   const booking = useDoctorBooking(doctor);
-  console.log(
-    "??",
-    booking?.selectedDate,
-    booking?.getAvailableSlots(),
-    doctor,
-  );
 
   return (
     <section className="min-h-screen w-[94%] md:w-[95%] xl:w-[95%] mx-auto bg-linear-to-br from-fuchsia-50 to-teal-50 relative">
@@ -38,6 +32,11 @@ export default function DoctorDetail({ doctor }: Props) {
                   src={doctor.image || ""}
                   alt={doctor.name}
                   fill
+                  sizes="
+                    (max-width: 640px) 100vw,
+                    (max-width: 1024px) 50vw,
+                    25vw
+                  "
                   className="rounded-3xl object-cover"
                 />
               </div>
@@ -74,13 +73,13 @@ export default function DoctorDetail({ doctor }: Props) {
                     <span className="text-base text-slate-600">
                       {
                         [
+                          "Minggu",
                           "Senin",
                           "Selasa",
                           "Rabu",
                           "Kamis",
                           "Jumat",
                           "Sabtu",
-                          "Minggu",
                         ][schedule.day]
                       }
                     </span>
@@ -297,11 +296,13 @@ export default function DoctorDetail({ doctor }: Props) {
                 </p>
 
                 <p className="mt-2 text-sm text-slate-700">
-                  📅 {booking.selectedDate.toLocaleDateString("id-ID")}
+                  Hari : {formatDate(booking.selectedDate, "text")}
                 </p>
 
                 <p className="text-sm text-slate-700">
-                  🕒 {booking.selectedTime}
+                  Jam :{" "}
+                  {formatTime(Number(booking.selectedTime?.split("-")[0]))} -
+                  {formatTime(Number(booking.selectedTime?.split("-")[1]))}
                 </p>
               </div>
             )}

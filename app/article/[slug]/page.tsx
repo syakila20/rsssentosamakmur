@@ -36,7 +36,13 @@ export async function generateMetadata({ params }: Props) {
 
   const article = await getArticleBySlug(slug);
 
-  if (!article) return {};
+  if (!article) {
+    return createMetadata({
+      title: "Artikel Tidak Ditemukan",
+      description: "Halaman artikel tidak ditemukan",
+      noIndex: true,
+    });
+  }
 
   return createMetadata({
     title: article.title,
@@ -45,7 +51,6 @@ export async function generateMetadata({ params }: Props) {
     image: article.thumbnail || "",
     type: "article",
     canonical: `${SITE_URL}/article/${article?.slug}`,
-
     keywords: [
       article.category?.name,
       article.title,

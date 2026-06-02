@@ -21,7 +21,6 @@ export default function BlogCard({
   slug,
   author,
 }: BlogCardProps) {
-  console.log("??date", date);
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -35,6 +34,11 @@ export default function BlogCard({
               src={image}
               alt={title}
               fill
+              sizes="
+                (max-width: 640px) 100vw,
+                (max-width: 1024px) 50vw,
+                25vw
+              "
               className="object-cover brightness-75 group-hover:brightness-90 transition"
             />
 
@@ -50,9 +54,9 @@ export default function BlogCard({
 
       <div className="p-4 flex flex-col gap-3">
         <Link href={`/article/${slug}`} className="cursor-pointer">
-          <h3 className="text-base font-semibold text-slate-700/80 leading-snug line-clamp-2 xl:h-12 md:h-12 ">
+          <h1 className="text-base font-semibold text-slate-700/80 leading-snug line-clamp-2 xl:h-12 md:h-12 ">
             {title}
-          </h3>
+          </h1>
         </Link>
         {excerpt && (
           <p className="text-[9.5pt] text-slate-400 line-clamp-2 xl:h-10 md:h-10">
