@@ -37,7 +37,7 @@ export default function BlogDetail(props: Props) {
 
       <div className="relative w-full h-50 md:h-100 lg:h-105 mt-6 rounded-lg overflow-hidden">
         <SafeImage
-          src={props.image}
+          src={props.image || ""}
           alt={props.title}
           fill
           className="object-cover"

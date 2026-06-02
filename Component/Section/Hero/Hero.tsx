@@ -7,6 +7,8 @@ import { motion, useAnimation } from "framer-motion";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Navbar/Sidebar";
 import SvgArrow from "@/Icon/Arrow";
+import SafeImage from "@/Component/SafeImage/SafeImage";
+import SvgChevronLeft from "@/Icon/Chevron";
 const thumbnails = [
   {
     src: "https://res.cloudinary.com/dzabbmtwf/image/upload/v1769746757/samples/landscapes/nature-mountains.jpg",
@@ -104,15 +106,15 @@ const HeroSection = () => {
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="absolute inset-0"
       >
-        <Image
+        <SafeImage
           src={active.src}
           alt={active.title}
           fill
-          priority
           className="object-cover"
+          placeholder="empty"
         />
       </motion.div>
 
@@ -132,10 +134,6 @@ const HeroSection = () => {
     items-start gap-4
   "
       >
-        {/* <span className="block text-4xl md:text-[30pt] font-bold leading-none">
-            {String(index)?.padStart(2, "0")}
-          </span> */}
-
         <div className="-mt-1">
           <motion.h1
             key={active.title}
@@ -171,13 +169,13 @@ const HeroSection = () => {
               className="h-1/2 p-2 cursor-pointer hover:backdrop-blur-xl"
               onClick={next}
             >
-              ›
+              <SvgChevronLeft className="rotate-180" height="20" />
             </button>
             <button
               className="h-1/2 p-2 cursor-pointer hover:backdrop-blur-xl"
               onClick={prev}
             >
-              ‹
+              <SvgChevronLeft height="20" />
             </button>
           </div>
 

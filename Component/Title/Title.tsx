@@ -20,9 +20,9 @@ const Title = ({ title, linkTo }: ITitle) => {
       >
         {/* Title */}
         <div className="flex flex-row gap-2 items-center sm:w-70 lg:w-130">
-          <h2 className="text-2xl leading-tight font-semibold text-slate-700  capitalize lg:text-3xl">
+          <h1 className="text-2xl leading-tight font-semibold text-slate-700  capitalize lg:text-3xl">
             {title}
-          </h2>
+          </h1>
           {linkTo && (
             <Link href={linkTo}>
               <SvgArrow

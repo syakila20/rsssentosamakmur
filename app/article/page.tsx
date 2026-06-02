@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 import {
   getArticles,
@@ -24,20 +24,32 @@ export async function generateMetadata({ searchParams }: Props) {
   const category = params.category;
 
   if (category) {
+    const readableCategory = category
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
     return createMetadata({
-      title: `Artikel ${category}`,
-      description: `Kumpulan artikel kesehatan ${category}`,
+      title: `Artikel Kesehatan ${readableCategory}`,
+      description: `Kumpulan artikel kesehatan tentang ${readableCategory}. Temukan informasi medis terpercaya, tips kesehatan, dan edukasi medis terbaru.`,
       path: `/article?category=${category}`,
-      canonical: `${SITE_URL}/article?category=kesehatan-ibu-kehamilan`,
+      canonical: `${SITE_URL}/article?category=${category}`,
+      keywords: [category, "artikel kesehatan", "tips kesehatan"],
     });
   }
 
   return createMetadata({
-    title: " Artikel Kesehatan untuk Hidup Lebih",
+    title: "Artikel Kesehatan untuk Hidup Lebih Sehat",
     description:
-      "Temukan berbagai artikel kesehatan, tips gaya hidup sehat, dan wawasan medis terpercaya untuk membantu Anda menjalani hidup yang lebih berkualitas setiap hari",
+      "Temukan berbagai artikel kesehatan, tips gaya hidup sehat, dan wawasan medis terpercaya untuk membantu Anda menjalani hidup yang lebih berkualitas setiap hari.",
     path: "/article",
     canonical: `${SITE_URL}/article`,
+    keywords: [
+      "artikel kesehatan",
+      "tips kesehatan",
+      "informasi medis",
+      "rumah sakit",
+    ],
   });
 }
 

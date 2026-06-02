@@ -6,11 +6,24 @@ import OurClientsSection from "@/Component/Section/OurClient/OurClient";
 import Service from "@/Component/Section/Service/Service";
 import TrustIndicator from "@/Component/Section/TrustIndicator/Trustindicator";
 import { websiteJsonLd } from "@/lib/seo/builder/website";
+import { createMetadata } from "@/lib/seo/createMetaData";
+export const revalidate = 300;
+export const metadata = createMetadata({
+  title: "Rumah Sakit Terbaik di Pekanbaru",
+  description:
+    "RS Sentosa Makmur menyediakan layanan dokter spesialis, rawat inap, konsultasi medis, dan pelayanan kesehatan terpercaya di Pekanbaru.",
+  path: "/",
+  keywords: [
+    "rumah sakit pekanbaru",
+    "dokter spesialis pekanbaru",
+    "rumah sakit terbaik",
+  ],
+});
 
 export default function Page() {
   return (
     <>
-      <div className="relative w-full overflow-hidden">
+      <main className="relative w-full overflow-hidden">
         <div
           aria-hidden="true"
           className="
@@ -62,7 +75,7 @@ export default function Page() {
 
           <Appointment />
         </div>
-      </div>
+      </main>
     </>
   );
 }
