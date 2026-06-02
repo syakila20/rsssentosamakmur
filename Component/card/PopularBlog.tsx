@@ -22,7 +22,11 @@ export default function PopularCard({
   createdAt,
 }: PopularCardProps) {
   return (
-    <Link href={`/article/${href}`} className="group flex gap-4">
+    <Link
+      aria-label="Lanjut baca detail artikel"
+      href={`/article/${href}`}
+      className="group flex gap-4"
+    >
       <div className="relative h-24 w-32 overflow-hidden rounded-xl shrink-0">
         <Image
           src={image}

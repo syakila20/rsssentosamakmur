@@ -168,10 +168,12 @@ const HeroSection = () => {
             <button
               className="h-1/2 p-2 cursor-pointer hover:backdrop-blur-xl"
               onClick={next}
+              aria-label="Gambar Selanjutnya"
             >
               <SvgChevronLeft className="rotate-180" height="20" />
             </button>
             <button
+              aria-label="Gambar Sebelumnya"
               className="h-1/2 p-2 cursor-pointer hover:backdrop-blur-xl"
               onClick={prev}
             >

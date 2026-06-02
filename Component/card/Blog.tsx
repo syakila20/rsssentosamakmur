@@ -53,7 +53,11 @@ export default function BlogCard({
       </div>
 
       <div className="p-4 flex flex-col gap-3">
-        <Link href={`/article/${slug}`} className="cursor-pointer">
+        <Link
+          aria-label="Lanjut Baca Artikel"
+          href={`/article/${slug}`}
+          className="cursor-pointer"
+        >
           <h1 className="text-base font-semibold text-slate-700/80 leading-snug line-clamp-2 xl:h-12 md:h-12 ">
             {title}
           </h1>
