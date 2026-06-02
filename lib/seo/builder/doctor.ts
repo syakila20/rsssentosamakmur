@@ -8,22 +8,28 @@ interface DoctorSEO {
   location?: string;
 }
 
-export function doctorJsonLd(doctor: DoctorSEO) {
+export function doctorJsonLd({
+  name,
+  location,
+  slug,
+  specialty,
+  image,
+}: DoctorSEO) {
   return {
     "@context": "https://schema.org",
     "@type": "Physician",
 
-    name: doctor.name,
+    name: name,
 
-    medicalSpecialty: doctor.specialty,
+    medicalSpecialty: specialty,
 
-    image: doctor.image,
+    image: image,
 
-    url: `${SITE_URL}/doctor/${doctor.slug}`,
+    url: `${SITE_URL}/doctor/${slug}`,
 
     address: {
       "@type": "PostalAddress",
-      addressLocality: doctor.location,
+      addressLocality: location,
     },
   };
 }
