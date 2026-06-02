@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import Appointment from "@/Component/AppoitmentBanner";
 import ArticleSection from "@/Component/Section/Article/Article";
 import DoctorSection from "@/Component/Section/Doctor/Doctor";
