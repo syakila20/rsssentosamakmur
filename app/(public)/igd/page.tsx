@@ -1,4 +1,4 @@
-import NotFound from "../not-found";
+import NotFound from "@/app/not-found";
 
 const Page = () => {
   return (
