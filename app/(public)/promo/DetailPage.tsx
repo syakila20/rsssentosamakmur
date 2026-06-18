@@ -3,8 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { formatCurrency } from "@/lib/formatCurrency";
-import { differenceInDays } from "date-fns";
 
 interface PromoBenefit {
   id: number;
@@ -44,8 +42,8 @@ interface Props {
 }
 
 export default function PromoDetailPage({ promo }: Props) {
-  const isExpiringSoon =
-    differenceInDays(new Date(promo.endDate), new Date()) <= 7;
+  const isExpiringSoon = true;
+  // differenceInDays(new Date(promo.endDate), new Date()) <= 7;
 
   return (
     <main className="bg-gradient-to-br from-fuchsia-50 via-white to-teal-50 min-h-screen">
@@ -164,11 +162,11 @@ export default function PromoDetailPage({ promo }: Props) {
 
             <div className="mt-2">
               <p className="text-3xl font-bold text-emerald-600">
-                {formatCurrency(promo.promoPrice)}
+                {/* {formatCurrency(promo.promoPrice)} */}
               </p>
 
               <p className="text-sm line-through text-slate-400">
-                {formatCurrency(promo.originalPrice)}
+                {/* {formatCurrency(promo.originalPrice)} */}
               </p>
             </div>
 

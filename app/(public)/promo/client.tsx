@@ -41,15 +41,7 @@ export default function PromoClients({ data }: Props) {
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {data.map((promo, i) => {
-            const isExpiringSoon = true;
-
-            return (
-           
-            );
-          })}
-        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
       </div>
     </section>
   );
