@@ -21,7 +21,7 @@ export default function Pagination({
   isPending,
 }: Props) {
   return (
-    <div className="flex justify-between items-center mt-4">
+    <div className="flex justify-between items-center mt-4 px-2">
       <p className="text-sm text-gray-500">
         {page} / {totalPages}
       </p>

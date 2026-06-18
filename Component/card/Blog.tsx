@@ -28,7 +28,11 @@ export default function BlogCard({
       className="relative z-10 group rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-lg"
     >
       <div className="relative h-25 lg:h-40 md:h-35 overflow-hidden">
-        <Link href={`/article/${slug}`} className="cursor-pointer">
+        <Link
+          aria-label="Pergi ke halaman detail artikel"
+          href={`/article/${slug}`}
+          className="cursor-pointer"
+        >
           <div className="relative h-40 w-auto overflow-hidden">
             <SafeImage
               src={image}
@@ -45,7 +49,7 @@ export default function BlogCard({
             <div className="absolute inset-0 bg-black/10" />
           </div>
         </Link>
-        <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-white backdrop-blur uppercase">
+        <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-[9px] font-medium bg-white/90 text-slate-900 backdrop-blur uppercase">
           {category}
         </span>
 

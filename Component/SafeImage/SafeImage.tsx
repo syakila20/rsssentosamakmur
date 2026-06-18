@@ -17,7 +17,7 @@ export default function SafeImage({
   return (
     <Image
       {...props}
-      src={imgSrc}
+      src={imgSrc || "/og.png"}
       placeholder="empty"
       quality={75}
       alt={alt}

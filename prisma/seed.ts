@@ -73,7 +73,7 @@ async function main() {
   }
 
   // roles
-  const roles = ["ADMIN", "EDITOR", "STAFF_MEDIS"];
+  const roles = ["ADMIN", "EDITOR", "STAFF_MEDIS", "PATIENT"];
   const roleMap: any = {};
 
   for (const r of roles) {

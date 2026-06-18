@@ -6,3 +6,10 @@ export const toSlug = (title: string) => {
     .replace(/\s+/g, "-") // ganti spasi dengan "-"
     .replace(/\-\-+/g, "-"); // hapus double "-"
 };
+
+export const formatSlug = (slug: string) => {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { can } from "@/lib/auth/rbac";
 import { articleRepository } from "./article.repository";
-import { can } from "@/lib/rbac";
 
 export const articleService = {
   async create(user: any, payload: any) {

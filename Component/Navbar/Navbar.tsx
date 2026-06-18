@@ -30,6 +30,7 @@ const TOP_MENU = [
   { label: "Emergency", key: "emergency", href: "/igd" },
   { label: "Cari Dokter", key: "findDoctor", href: "/doctor" },
   { label: "MCU", key: "mcu", href: "/promo" },
+  { label: "daftar/login", key: "login", href: "/login" },
 ];
 
 export default function Navbar() {

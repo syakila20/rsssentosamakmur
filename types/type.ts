@@ -37,6 +37,8 @@ export type ApiResponse<T> = {
   success: true;
   data: T;
   meta: ApiMeta;
+  message: string;
+  code?: string;
 };
 
 export type ApiErrorResponse = {
@@ -279,6 +281,33 @@ export interface IDoctorCardSpec extends IDoctorCard {
 }
 
 export type IPropDoctors = SectionClientProps<IDoctorCardSpec, IOption>;
+
+export const promoCardSelect = {
+  id: true,
+  title: true,
+  slug: true,
+  shortDescription: true,
+  bannerImage: true,
+  discountPercent: true,
+  image: true,
+  minAge: true,
+  maxAge: true,
+  startDate: true,
+  endDate: true,
+  category: {
+    select: {
+      name: true,
+      slug: true,
+    },
+  },
+  promoPrice: true,
+  originalPrice: true,
+} satisfies Prisma.PromoSelect;
+
+export type IPromoCard = Prisma.PromoGetPayload<{
+  select: typeof promoCardSelect;
+}>;
+export type IPropPromo = SectionClientProps<IPromoCard, IOption>;
 
 export interface IMenuItem {
   label?: string;
