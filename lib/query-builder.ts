@@ -23,7 +23,6 @@ export function buildQuery<TWhere extends Record<string, unknown>>({
     (where as any).OR = searchableFields.map((field) => ({
       [field]: {
         contains: search,
-        mode: "insensitive",
       },
     }));
   }

@@ -9,7 +9,7 @@ type ModalProps = {
   onClose: () => void;
   title?: string;
   children: ReactNode;
-  widthModal: "sm" | "md" | "lg" | "xl";
+  widthModal: "sm" | "md" | "lg" | "xl" | "xs";
   footer?: ReactNode;
 };
 
@@ -46,6 +46,7 @@ export default function Modal({
   if (!modalRoot) return null;
 
   const size = {
+    xs: "w-2xs",
     sm: "w-3xl",
     md: "w-4xl",
     lg: "w-5xl",
@@ -58,7 +59,7 @@ export default function Modal({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -79,7 +80,7 @@ export default function Modal({
             >
               {/* Header */}
               <div className="flex justify-between items-center px-5 py-5 border-b border-b-slate-200">
-                <h2 className="text-base lg:text-[18pt] xl:text-[18pt] md:text-[18pt] font-semibold text-slate-700">
+                <h2 className="text-base lg:text-[12pt] xl:text-[12pt] md:text-[12pt] font-semibold text-slate-700">
                   {title}
                 </h2>
 
@@ -94,9 +95,11 @@ export default function Modal({
 
               {/* Scrollable Content */}
               <div className="p-6 overflow-y-auto">{children}</div>
-              <div className="border-t border-t-slate-200 px-5 py-3.5 ">
-                {footer}
-              </div>
+              {footer && (
+                <div className="border-t border-t-slate-200 px-5 py-3.5 ">
+                  {footer}
+                </div>
+              )}
             </div>
           </motion.div>
         </>

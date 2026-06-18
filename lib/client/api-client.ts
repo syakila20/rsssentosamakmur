@@ -35,15 +35,14 @@ export async function apiClient<T>(
     method,
     cache,
 
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-
-      ...(token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {}),
-
+      // ...(token
+      //   ? {
+      //       Authorization: `Bearer ${token}`,
+      //     }
+      //   : {}),
       ...headers,
     },
 
@@ -53,7 +52,11 @@ export async function apiClient<T>(
   const json = await res.json();
 
   if (!res.ok) {
-    throw new Error(json?.message || "API Error");
+    throw {
+      message: json?.message || "API Error",
+      status: res.status,
+      data: json,
+    };
   }
 
   return json;

@@ -1,18 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { usePathname } from "next/navigation";
 
-const LOCALES = ["id", "en"]; // sesuaikan dengan project kamu
-
 export const getLastPathname = () => {
   const pathname = usePathname();
 
   const segments = pathname.split("/").filter(Boolean);
 
   // cek apakah segment pertama adalah locale
-  const isLocale = LOCALES.includes(segments[0]);
 
   // hapus locale kalau ada
-  const cleanSegments = isLocale ? segments.slice(1) : segments;
+  const cleanSegments = segments;
 
   return {
     lastOfPath: cleanSegments[cleanSegments.length - 1] || "",
@@ -31,3 +28,29 @@ export const formatStringCapital = (str: string) => {
     ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
+
+export function useCurrentRoute() {
+  const pathname = usePathname();
+
+  const segments = pathname.split("/").filter(Boolean);
+
+  const root = segments[0] ?? "";
+  const modules = segments[1] ?? "";
+  const action = segments[2] ?? "";
+  const slug = segments[3] ?? "";
+
+  return {
+    pathname,
+    segments,
+
+    root,
+    modules,
+    action,
+    slug,
+
+    isList: segments.length === 2,
+    isCreate: action === "create",
+    isEdit: action === "edit",
+    isDetail: Boolean(slug),
+  };
+}

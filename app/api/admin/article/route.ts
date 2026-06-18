@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { requirePermission } from "@/lib/guard";
 import { prisma } from "@/lib/prisma";
+import { requirePermission } from "@/lib/auth/require-permission";
 
 export async function POST(req: Request) {
   try {

@@ -1,6 +1,6 @@
 export function formatDate(
   dateInput: string | Date,
-  format: "long" | "short" | "text" = "text",
+  format: "long" | "short" | "full" | "text" = "text",
 ): string {
   const date = new Date(dateInput);
 
@@ -10,9 +10,11 @@ export function formatDate(
 
   const day = String(date.getDate()).padStart(2, "0");
   const monthNumber = String(date.getMonth() + 1).padStart(2, "0");
-  const monthText = date.toLocaleString("en-US", { month: "short" });
+  const monthText = date.toLocaleString("id-ID", { month: "short" });
+  const monthLong = date.toLocaleString("id-ID", { month: "long" });
   const yearFull = date.getFullYear();
   const yearShort = String(yearFull).slice(-2);
+  const weekday = date.toLocaleString("id-ID", { weekday: "long" });
 
   switch (format) {
     case "long":
@@ -20,6 +22,8 @@ export function formatDate(
 
     case "short":
       return `${day}-${monthNumber}-${yearShort}`;
+    case "full":
+      return `${weekday}, ${day} ${monthLong} ${yearFull}`;
 
     case "text":
     default:
@@ -64,4 +68,41 @@ export const DAYS = [
 
 export function getDayName(day: number) {
   return DAYS[day] ?? "Unknown";
+}
+
+export function getPromoExpiry(endDate: string | Date, threshold = 7) {
+  const now = new Date();
+  const target = new Date(endDate);
+
+  const diffMs = target.getTime() - now.getTime();
+
+  if (diffMs <= 0) {
+    return {
+      isExpired: true,
+      isExpiringSoon: false,
+      daysLeft: 0,
+      label: "Promo telah berakhir",
+    };
+  }
+
+  const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  let label = `Berakhir dalam ${daysLeft} hari`;
+
+  if (daysLeft === 1) {
+    label = "Berakhir besok";
+  }
+
+  if (daysLeft === 0) {
+    const hoursLeft = Math.ceil(diffMs / (1000 * 60 * 60));
+
+    label = `Berakhir dalam ${hoursLeft} jam`;
+  }
+
+  return {
+    isExpired: false,
+    isExpiringSoon: daysLeft <= threshold,
+    daysLeft,
+    label,
+  };
 }

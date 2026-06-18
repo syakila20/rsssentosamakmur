@@ -21,6 +21,7 @@ model User {
   articles  Article[]
   sessions  Session[]
   roles     UserRole[]
+  loginOtps LoginOtp[]
 }
 
 model Role {
@@ -71,16 +72,6 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
-}
-
-model Session {
-  id           Int      @id @default(autoincrement())
-  sessionToken String   @unique @db.NVarChar(255)
-  userId       Int
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@index([userId])
 }
 
@@ -229,20 +220,6 @@ model ArticleView {
   @@index([sessionId])
 }
 
-model Promo {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.NVarChar(255)
-  slug        String    @unique @db.NVarChar(255)
-  description String    @db.NVarChar(Max)
-  image       String?
-  startDate   DateTime
-  endDate     DateTime
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-}
-
 model HospitalProfile {
   id          Int      @id @default(1)
   name        String   @db.NVarChar(255)
@@ -330,4 +307,157 @@ model Applicant {
   status    String   @default("PENDING")
   appliedAt DateTime @default(now())
   job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model Promo {
+  id Int @id @default(autoincrement())
+
+  title String @db.NVarChar(255)
+  slug  String @unique @db.NVarChar(255)
+
+  shortDescription String? @db.NVarChar(500)
+  description      String  @db.NVarChar(Max)
+
+  image       String? @db.NVarChar(500)
+  bannerImage String? @db.NVarChar(500)
+
+  categoryId Int?
+  category   PromoCategory? @relation(fields: [categoryId], references: [id])
+
+  originalPrice Decimal? @db.Decimal(18, 2)
+  promoPrice    Decimal? @db.Decimal(18, 2)
+
+  discountPercent Int?
+
+  gender String @db.NVarChar(255)
+
+  minAge Int?
+  maxAge Int?
+
+  patientRecommendation String? @db.NVarChar(255)
+
+  preparation    String? @db.NVarChar(Max)
+  termsCondition String? @db.NVarChar(Max)
+
+  startDate DateTime
+  endDate   DateTime
+
+  isFeatured Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  benefits PromoBenefit[]
+
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
+  promoGalleries   PromoGallery[]
+  promoTagMappings PromoTagMapping[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model PromoCategory {
+  id Int @id @default(autoincrement())
+
+  name String @unique @db.NVarChar(100)
+  slug String @unique @db.NVarChar(100)
+
+  description String? @db.NVarChar(500)
+
+  promos Promo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PromoBenefit {
+  id Int @id @default(autoincrement())
+
+  promoId Int
+
+  title       String  @db.NVarChar(255)
+  description String? @db.NVarChar(Max)
+
+  sortOrder Int @default(0)
+
+  promo Promo @relation(fields: [promoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([promoId])
+}
+
+model PromoGallery {
+  id        Int      @id @default(autoincrement())
+  promoId   Int
+  image     String   @db.NVarChar(500)
+  sortOrder Int      @default(0)
+  promo     Promo    @relation(fields: [promoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([promoId])
+}
+
+model PromoTag {
+  id Int @id @default(autoincrement())
+
+  name String @unique @db.NVarChar(100)
+  slug String @unique @db.NVarChar(100)
+
+  promos PromoTagMapping[]
+}
+
+model PromoTagMapping {
+  promoId Int
+  tagId   Int
+
+  promo Promo    @relation(fields: [promoId], references: [id], onDelete: Cascade)
+  tag   PromoTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([promoId, tagId])
+}
+
+model LoginOtp {
+  id String @id @default(cuid())
+
+  email String @db.NVarChar(255)
+
+  codeHash String @db.NVarChar(255)
+
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  @@index([email])
+}
+
+model Session {
+  id String @id @default(cuid())
+
+  sessionToken String @unique
+
+  userId Int
+
+  expires DateTime
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RateLimit {
+  id        String   @id @default(cuid())
+  ip        String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@index([ip])
 }

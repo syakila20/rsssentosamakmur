@@ -38,7 +38,6 @@ export default function TrustIndicator() {
         ref={sectionRef}
         className="w-[95%] md:w-[85%] xl:w-[85%] mx-auto relative"
       >
-        {/* Heading */}
         <div
           className={`text-center mx-auto mb-20 transition-all duration-1000 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
@@ -72,20 +71,6 @@ export default function TrustIndicator() {
               </p>
             </div>
           ))}
-
-          {/* Static Item */}
-          <div
-            className={`transition-all duration-1000 delay-600 md:mt-10 lg:mt-10 xl:mt-10  ${
-              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-          >
-            <h3 className="text-4xl md:text-5xl font-bold text-teal-600">
-              Paripurna
-            </h3>
-            <p className="mt-4 text-sm md:text-base font-medium text-gray-700 tracking-wide">
-              Akreditasi Nasional
-            </p>
-          </div>
         </div>
       </div>
     </section>
