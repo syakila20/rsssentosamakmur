@@ -11,7 +11,7 @@ import {
 
 export default async function Dashboard() {
   const user = await requireAuth();
-  console.log("??user", { user });
+  console.log("??re", user);
   return (
     <section className="space-y-6">
       <div className="flex flex-col">

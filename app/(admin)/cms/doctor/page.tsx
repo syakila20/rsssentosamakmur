@@ -19,13 +19,10 @@ export default async function Article({ searchParams }: Props) {
   const result = await getDoctors(query);
   const categories = await getDoctorsSpecialty();
   return (
-    <div>
-      <CardTitle className="text-2xl lg:text-3xl pb-10">Article</CardTitle>
-      <ListDoctor
-        initialData={result?.data as []}
-        categories={categories}
-        initialMeta={result?.meta}
-      />
-    </div>
+    <ListDoctor
+      initialData={result?.data as []}
+      categories={categories}
+      initialMeta={result?.meta}
+    />
   );
 }

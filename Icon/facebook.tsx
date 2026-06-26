@@ -3,7 +3,7 @@ import { SvgTextProps } from "./type";
 const SvgFacebook = ({ className, height = "18px", style }: SvgTextProps) => {
   return (
     <svg
-      width="auto"
+      width="100%"
       height={height}
       viewBox="0 0 24 24"
       className={className}

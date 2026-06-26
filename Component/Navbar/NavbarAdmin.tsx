@@ -12,6 +12,7 @@ interface INavbarAdmin {
   name: string;
   email: string;
   avatar: string;
+  role: string;
 }
 
 const NavbarAdmin: React.FC<INavbarAdmin> = (props) => {
@@ -87,8 +88,10 @@ const NavbarAdmin: React.FC<INavbarAdmin> = (props) => {
             </div>
 
             <div className="hidden text-left md:block">
-              <p className="text-sm font-medium text-slate-800">{props.name}</p>
-              <p className="text-xs text-slate-500">Administrator</p>
+              <p className="text-sm font-medium text-slate-800 uppercase">
+                {props.name}
+              </p>
+              <p className="text-xs text-slate-500 uppercase">{props?.role}</p>
             </div>
           </button>
 

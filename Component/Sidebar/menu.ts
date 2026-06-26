@@ -32,7 +32,7 @@ export const SIDEBAR_MENU: ISidebarMenu[] = [
     label: "Artikel",
     icon: SvgArticle,
     permissions: ["article.read"],
-    path: "/cms/article",
+    path: "/cms/artikel",
   },
 
   {

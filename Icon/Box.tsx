@@ -4,7 +4,7 @@ const SvgBox = ({ className, height = "18px", style }: SvgTextProps) => {
   return (
     <svg
       fill="currentColor"
-      width="auto"
+      width="100%"
       height={height}
       viewBox="0 0 32 32"
       version="1.1"

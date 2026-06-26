@@ -86,7 +86,8 @@ export default function DoctorCard({ doctor }: IObjDoctor) {
             "
           >
             <h3 className="text-sm font-semibold text-white leading-tight">
-              {doctor?.name}
+              {doctor?.name},&nbsp;
+              {doctor?.specialty?.title}
             </h3>
 
             <p className="mt-1 text-xs text-slate-200">

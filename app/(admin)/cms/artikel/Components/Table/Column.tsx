@@ -1,4 +1,5 @@
 import { Column } from "@/Component/Table/type";
+import SvgArticle from "@/Icon/Article";
 import { formatDate } from "@/lib/helperDate";
 import { IArticleCard } from "@/types/type";
 import clsx from "clsx";
@@ -38,19 +39,8 @@ export const Columns: Column<IArticleCard>[] = [
     title: "",
 
     render: (row) => (
-      <Link
-        href={`/cms/article/edit/${row?.slug}`}
-        className="
-          rounded-lg
-          border
-          border-slate-200
-          px-3
-          py-1
-          text-sm
-          hover:bg-slate-50
-        "
-      >
-        Detail
+      <Link href={`/cms/artikel/edit/${row?.id}`} className="text-emerald-700">
+        <SvgArticle />
       </Link>
     ),
   },

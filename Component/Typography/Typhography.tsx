@@ -87,7 +87,6 @@ export function Label({ children, className }: TypographyProps) {
         `
         text-sm
         font-medium
-        text-slate-700
       `,
         className,
       )}

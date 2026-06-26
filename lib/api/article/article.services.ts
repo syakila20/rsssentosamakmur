@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { buildMeta } from "@/lib/api/pagination";
 import { buildQuery } from "@/lib/query-builder";
 
-export async function getArticleCategories() {
+export async function getArticleCategories(withId: boolean) {
   const categories = await prisma.category.findMany({
     where: {},
 
@@ -15,11 +15,31 @@ export async function getArticleCategories() {
 
   return categories.map((c) => ({
     label: c.name,
-    value: c?.slug,
+    value: withId ? c?.id?.toString() : c?.slug,
   }));
 }
 
-export async function getArticles(searchParams: URLSearchParams) {
+export async function getTagsArticle() {
+  const categories = await prisma.tag.findMany({
+    where: {},
+
+    select: {
+      name: true,
+      slug: true,
+      id: true,
+    },
+  });
+
+  return categories.map((c) => ({
+    label: c.name,
+    value: `${c?.slug}_${c?.id}`,
+  }));
+}
+
+export async function getArticles(
+  searchParams: URLSearchParams,
+  published: boolean,
+) {
   const query = buildQuery({
     searchParams,
     searchableFields: ["title", "excerpt"],
@@ -36,7 +56,7 @@ export async function getArticles(searchParams: URLSearchParams) {
 
   const where = {
     ...query.where,
-    published: true,
+    published: published,
   };
 
   const [data, total] = await Promise.all([

@@ -8,7 +8,7 @@ const SvgChevronLeft = ({
   return (
     <svg
       fill="none"
-      width="auto"
+      width="100%"
       height={height}
       style={style}
       className={className}

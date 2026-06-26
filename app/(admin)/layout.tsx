@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col flex-1">
           <NavbarProfileAccount />
 
-          <main className="flex-1 overflow-auto p-6 relative bg-[#F1F2F3] ">
+          <main className="flex-1 overflow-auto relative bg-[#F1F2F3] ">
             {children}
           </main>
         </div>

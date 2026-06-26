@@ -19,16 +19,15 @@ const MENU_ITEMS: IMenuItemWithChildren[] = [
   { label: "Artikel", key: "article", href: "/article" },
   { label: "Karir", key: "career", href: "/career" },
   {
-    label: "Promo",
-    key: "promo",
-    href: "/promo",
-    children: [],
+    label: "Dokter",
+    key: "findDoctor",
+    href: "/doctor",
   },
 ];
 
 const TOP_MENU = [
   { label: "Emergency", key: "emergency", href: "/igd" },
-  { label: "Cari Dokter", key: "findDoctor", href: "/doctor" },
+  { label: "Komunitas", key: "comunity", href: "/comunity" },
   { label: "MCU", key: "mcu", href: "/promo" },
   { label: "daftar/login", key: "login", href: "/login" },
 ];

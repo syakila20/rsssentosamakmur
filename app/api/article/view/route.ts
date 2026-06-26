@@ -1,4 +1,5 @@
 import { trackArticleView } from "@/lib/api/article/article.services";
+import { nextApiErrorResponse, nextApiResponse } from "@/lib/api/next-response";
 import { apiErrorResponse, apiResponse } from "@/lib/api/response";
 
 export async function POST(req: Request) {
@@ -6,7 +7,7 @@ export async function POST(req: Request) {
     const { slug, sessionId } = await req.json();
 
     if (!slug) {
-      return apiErrorResponse("Failed to fetch article", {
+      return nextApiErrorResponse("Failed to fetch article", {
         code: "FAILED_POST_VIEW",
         status: 404,
         details: "Post Need Slug Params",
@@ -23,9 +24,9 @@ export async function POST(req: Request) {
       userAgent ?? undefined,
     );
 
-    return apiResponse(true, null);
+    return nextApiResponse(true, null);
   } catch (err) {
-    return apiErrorResponse("Failed to fetch article", {
+    return nextApiErrorResponse("Failed to fetch article", {
       code: "FAILED_POST_VIEW",
       status: 404,
       details: `Failed post tracking count view :${err}`,

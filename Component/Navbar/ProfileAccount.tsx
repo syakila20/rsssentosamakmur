@@ -9,6 +9,7 @@ export default async function NavbarProfileAccount() {
       name={user?.name}
       email={user?.email}
       avatar={user?.avatar || ""}
+      role={user?.roles[0] || "-"}
     />
   );
 }

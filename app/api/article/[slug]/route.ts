@@ -1,6 +1,7 @@
 import { apiErrorResponse, apiResponse } from "@/lib/api/response";
 
 import { getArticleBySlug } from "@/lib/api/article/article.services";
+import { nextApiErrorResponse, nextApiResponse } from "@/lib/api/next-response";
 
 interface Params {
   params: Promise<{
@@ -14,12 +15,11 @@ export async function GET(req: Request, { params }: Params) {
 
     const article = await getArticleBySlug(slug);
 
-    return apiResponse(article, null);
-  } catch (err) {
-    return apiErrorResponse("Failed to fetch article", {
-      code: "ARTICLE_DETAIL_FAILED",
-      status: 404,
-      details: err,
+    return nextApiResponse(article, null);
+  } catch (error) {
+    return nextApiErrorResponse("Failed get articles", {
+      status: 500,
+      details: error,
     });
   }
 }

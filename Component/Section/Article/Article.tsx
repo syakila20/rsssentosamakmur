@@ -11,9 +11,10 @@ export default async function ArticleSection() {
       page: "1",
       limit: "6",
     }),
+    true,
   );
 
-  const categories = await getArticleCategories();
+  const categories = await getArticleCategories(false);
 
   return (
     <ArticleClient

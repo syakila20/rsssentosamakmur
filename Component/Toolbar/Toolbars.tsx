@@ -1,11 +1,7 @@
 "use client";
 
-import SvgSort from "@/Icon/Sort";
 import clsx from "clsx";
 import { CardTitle, PageTitle, SectionTitle } from "../Typography/Typhography";
-import SvgSearch from "@/Icon/Search";
-import InputWithButton from "../Input/InputWithButton";
-import { useState } from "react";
 
 interface ToolbarProps {
   title: string;
@@ -17,47 +13,22 @@ interface ToolbarProps {
   className?: string;
 }
 
-export default function Toolbar({
-  title,
-  onSearch,
-  action,
-  showSearch,
-  className,
-}: ToolbarProps) {
-  const [keyword, setKeyword] = useState<string>();
-  const [errorMsg, setErrorMsg] = useState<string>("");
-
-  const onClickSearch = () => {
-    if (!keyword?.trim()) {
-      setErrorMsg("");
-      onSearch?.("");
-      return;
-    }
-
-    if (keyword.length < 3) {
-      setErrorMsg("Minimal 3 karakter untuk melakukan pencarian");
-      return;
-    }
-
-    setErrorMsg("");
-
-    onSearch?.(keyword);
-  };
+export default function Toolbar({ title, action, className }: ToolbarProps) {
   return (
     <div
       className={clsx(
         `
-        flex
-        flex-col
-        gap-4
-        lg:flex-row
-        lg:items-end
-        lg:justify-between
-      `,
+    flex
+    flex-col
+    gap-4
+    lg:flex-row
+    lg:items-start
+    lg:justify-between
+    `,
         className,
       )}
     >
-      <div>
+      <div className="pt-1">
         <CardTitle>{title}</CardTitle>
       </div>
 
@@ -70,15 +41,11 @@ export default function Toolbar({
           sm:items-center
         "
       >
-        {showSearch && (
-          <InputWithButton
-            value={keyword || ""}
-            onChangeValue={(val) => setKeyword(val?.target?.value)}
-            onSubmit={onClickSearch}
-          />
-        )}
         {action}
       </div>
     </div>
   );
 }
+//  <div className="w-3xs">
+//
+//           </div>

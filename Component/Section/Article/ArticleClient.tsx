@@ -50,9 +50,10 @@ export default function ArticleClient({
           arrPill={categories as []}
           selected={filters.category as string}
           multiple={false}
-          onChange={(val) =>
-            updateFilter("category", val === "all" ? "" : String(val))
-          }
+          onChange={(val) => {
+            console.log("??", { val });
+            updateFilter("category", val === "all" ? "" : String(val));
+          }}
         />
       </div>
 
