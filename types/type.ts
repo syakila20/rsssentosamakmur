@@ -100,9 +100,11 @@ export interface IDoctorCard {
   specialty: {
     label: string;
     slug: string;
+    title: string;
   };
 
   isOnline: boolean;
+  isActive: boolean;
 
   schedules: {
     day: number;
@@ -127,7 +129,7 @@ export interface IDoctorCard {
 export type FilterMapper<TWhere> = {
   [key: string]: (value: string) => Partial<TWhere>;
 };
-export type FilterableFields<TWhere> =
+export type FilterableFields<TWhere = Record<string, unknown>> =
   | string[]
   | Record<string, (value: string) => Partial<TWhere>>;
 export type BuildQueryOptions<TWhere = Record<string, unknown>> = {
@@ -277,6 +279,7 @@ export interface IDoctorCardSpec extends IDoctorCard {
   specialty: {
     label: string;
     slug: string;
+    title: string;
   };
 }
 

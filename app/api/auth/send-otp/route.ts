@@ -1,3 +1,4 @@
+import { nextApiErrorResponse, nextApiResponse } from "@/lib/api/next-response";
 import { apiErrorResponse, apiResponse } from "@/lib/api/response";
 import { createOtp } from "@/lib/auth/otp";
 import { sendOtpEmail } from "@/lib/email";
@@ -8,7 +9,7 @@ export async function POST(req: Request) {
     const { email } = await req.json();
 
     if (!email) {
-      return apiErrorResponse("Email is required", {
+      return nextApiErrorResponse("Email is required", {
         status: 400,
         code: "EMAIL_REQUIRED",
       });
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
     const allowed = await checkRateLimit(ip);
 
     if (!allowed) {
-      return apiErrorResponse("Too many requests", {
+      return nextApiErrorResponse("Too many requests", {
         status: 429,
         code: "RATE_LIMIT",
       });
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
 
     await sendOtpEmail(cleanEmail, otp);
 
-    const response = apiResponse(
+    const response = nextApiResponse(
       {
         expiresIn: 300,
       },
@@ -52,11 +53,10 @@ export async function POST(req: Request) {
 
     return response;
   } catch (error) {
-    console.error("SEND_OTP_ERROR", error);
-
-    return apiErrorResponse("Internal Server Error", {
+    return nextApiErrorResponse("Internal Server Error", {
       status: 500,
       code: "INTERNAL_ERROR",
+      details: error,
     });
   }
 }

@@ -14,6 +14,17 @@ export const Columns: Column<IDoctorCard>[] = [
   {
     key: "name",
     title: "Doktor",
+    render(row) {
+      return <span>{`${row?.name} ${row?.specialty?.title}`}</span>;
+    },
+  },
+  {
+    key: "isActive",
+    title: "Status",
+    render(row, index) {
+      console.log("??", { row });
+      return <span>{row?.isActive ? "Aktif" : "Tidak Aktif"}</span>;
+    },
   },
 
   {
@@ -30,7 +41,7 @@ export const Columns: Column<IDoctorCard>[] = [
 
     render: (row) => (
       <Link
-        href={`/cms/article/edit/${row?.slug}`}
+        href={`/cms/doctor/${row?.slug}`}
         className="
           rounded-lg
           border

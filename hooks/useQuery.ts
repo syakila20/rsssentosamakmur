@@ -8,10 +8,12 @@ export function useQueryServer({
   pageKey,
   searchKey,
   categoryKey,
+  statusKey,
 }: {
   pageKey: string;
   searchKey?: string;
   categoryKey?: string;
+  statusKey?: string;
 }) {
   const pathname = usePathname();
 
@@ -24,6 +26,7 @@ export function useQueryServer({
   const search = searchKey ? (searchParams.get(searchKey) ?? "") : "";
 
   const category = categoryKey ? (searchParams.get(categoryKey) ?? "") : "";
+  const status = statusKey ? (searchParams.get(statusKey) ?? "") : "";
 
   function update(params: Record<string, string | number | undefined | null>) {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -61,6 +64,15 @@ export function useQueryServer({
     });
   }
 
+  function setStatus(v: string) {
+    if (!statusKey) return;
+
+    update({
+      [statusKey]: v,
+      [pageKey]: 1,
+    });
+  }
+
   function setPage(page: number) {
     update({
       [pageKey]: page,
@@ -74,5 +86,7 @@ export function useQueryServer({
     setSearch,
     setCategory,
     setPage,
+    status,
+    setStatus,
   };
 }

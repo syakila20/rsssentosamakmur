@@ -1,0 +1,74 @@
+/* =========================================
+   ARTICLE DETAIL THEME
+========================================= */
+
+
+.article-detail {
+  @apply text-slate-700;
+}
+
+
+.article-detail h1,
+.article-detail h2,
+.article-detail h3 {
+  @apply text-slate-900;
+}
+
+
+.article-detail a {
+  @apply text-blue-600;
+}
+
+
+.article-detail blockquote {
+  @apply border-sky-500 bg-slate-50 text-slate-700;
+}
+
+
+.article-detail code {
+  @apply bg-slate-100 text-pink-600;
+}
+
+
+
+/* =========================================
+   ARTICLE EDITOR THEME
+========================================= */
+
+
+.article-editor {
+  @apply bg-slate-900 text-slate-100;
+}
+
+
+.article-editor h1,
+.article-editor h2,
+.article-editor h3 {
+  @apply text-white;
+}
+
+
+.article-editor p,
+.article-editor li {
+  @apply text-slate-200;
+}
+
+
+.article-editor a {
+  @apply text-blue-400;
+}
+
+
+.article-editor blockquote {
+  @apply border-sky-400 bg-slate-800 text-slate-300;
+}
+
+
+.article-editor pre {
+  @apply bg-slate-950 text-slate-100;
+}
+
+
+.article-editor code {
+  @apply bg-slate-800 text-pink-400;
+}

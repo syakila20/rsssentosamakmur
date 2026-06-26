@@ -4,20 +4,20 @@ import React, { useEffect, useState } from "react";
 import { Columns } from "./Column";
 import Toolbar from "@/Component/Toolbar/Toolbars";
 import { Button } from "@/Component/Button/Button";
-import SvgArrow from "@/Icon/Arrow";
-import SvgArticle from "@/Icon/Article";
 import SvgPlus from "@/Icon/Plus";
-import { useDebounce } from "@/hooks/useDebounce";
 import Pagination from "@/Component/pagination/Pagination";
 import { ArticleClientProps } from "@/app/(public)/article/Client";
 import { useQueryServer } from "@/hooks/useQuery";
 import { useRouter } from "next/navigation";
+import { Select } from "@/Component/Select/Select";
+import AdminPage from "@/app/(admin)/AdminPage";
 
 const ListArticle: React.FC<ArticleClientProps> = ({
   initialData,
   initialMeta,
   categories,
 }) => {
+  const [publish, setPublish] = useState<string>("1");
   const { category, isPending, setCategory, setPage, setSearch } =
     useQueryServer({
       pageKey: "page",
@@ -27,11 +27,11 @@ const ListArticle: React.FC<ArticleClientProps> = ({
   const router = useRouter();
 
   return (
-    <>
+    <AdminPage title="Artikel">
       <Toolbar
-        title="List Of Article"
+        title="List Artikel"
         onSearch={(e) => setSearch(e)}
-        className="pb-2.5"
+        className="pb-2"
         showSearch
         action={
           <>
@@ -39,7 +39,7 @@ const ListArticle: React.FC<ArticleClientProps> = ({
               variant="secondary"
               shape="full"
               icon={<SvgPlus className="shrink-0" height="20" />}
-              onClick={() => router.push("/cms/article/Add")}
+              onClick={() => router.push("/cms/artikel/tambah")}
             >
               Artikel
             </Button>
@@ -61,7 +61,7 @@ const ListArticle: React.FC<ArticleClientProps> = ({
         onNext={() => setPage(initialMeta.page + 1)}
         onPrev={() => setPage(initialMeta.page - 1)}
       />
-    </>
+    </AdminPage>
   );
 };
 

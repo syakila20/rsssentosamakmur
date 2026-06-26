@@ -9,7 +9,7 @@ const SvgWorld = ({
   return (
     <svg
       fill="currentColor"
-      width="auto"
+      width="100%"
       height={height}
       style={style}
       className={className}

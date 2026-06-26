@@ -7,8 +7,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { useSidebar } from "./SidebarContext";
 import { ISidebarMenu } from "./menu";
-import SvgArrow from "@/Icon/Arrow";
-import SvgChevronLeft from "@/Icon/Chevron";
 import SvgArrowDown from "@/Icon/ArrowDown";
 
 interface Props {
@@ -67,7 +65,7 @@ export default function SidebarItem({ item }: Props) {
           transition
           ${
             isActive
-              ? "bg-slate-900 text-white"
+              ? "bg-slate-200 text-white"
               : "hover:bg-slate-100 text-slate-600"
           }
         `}

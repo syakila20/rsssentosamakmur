@@ -6,7 +6,7 @@ const SvgUsers = ({ className, height = "18px", style }: SvgTextProps) => {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       role="img"
-      width="auto"
+      width="100%"
       height={height}
       style={style}
       className={className}

@@ -1,22 +1,17 @@
 import { ApiMeta } from "@/types/type";
-import { NextResponse } from "next/server";
 
 export function apiResponse<T>(
   data: T,
   meta: ApiMeta | null,
   message?: string,
 ) {
-  return NextResponse.json(
-    {
-      success: true,
-      data,
-      meta,
-      message: message,
-    },
-    {
-      status: 200,
-    },
-  );
+  return {
+    success: true,
+    data,
+    meta,
+    message: message,
+    code: 200,
+  };
 }
 
 export function apiErrorResponse(
@@ -27,15 +22,11 @@ export function apiErrorResponse(
     details?: unknown;
   },
 ) {
-  return NextResponse.json(
-    {
-      success: false,
-      message,
-      code: options?.code,
-      details: options?.details,
-    },
-    {
-      status: options?.status ?? 500,
-    },
-  );
+  return {
+    success: false,
+    message,
+    code: options?.code,
+    details: options?.details,
+    status: options?.status ?? 500,
+  };
 }

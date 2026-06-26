@@ -3,7 +3,7 @@ import { SvgTextProps } from "./type";
 const SvgTwitter = ({ className, height = "18px", style }: SvgTextProps) => {
   return (
     <svg
-      width="auto"
+      width="100%"
       height={height}
       style={style}
       className={className}

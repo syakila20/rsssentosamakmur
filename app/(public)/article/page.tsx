@@ -58,8 +58,8 @@ export default async function ArticlePage({ searchParams }: Props) {
 
   const query = new URLSearchParams(params);
 
-  const articles = await getArticles(query);
-  const categories = await getArticleCategories();
+  const articles = await getArticles(query, true);
+  const categories = await getArticleCategories(false);
   const articlesPopular = await getPopularArticles(1);
 
   return (

@@ -3,8 +3,15 @@ import { buildMeta } from "@/lib/api/pagination";
 import { buildQuery } from "@/lib/query-builder";
 import { IDoctorCard } from "@/types/type";
 
+type DoctorFilters = {
+  specialty?: {
+    slug?: string;
+  };
+  isActive?: boolean;
+};
+
 export async function getDoctors(searchParams: URLSearchParams) {
-  const query = buildQuery({
+  const query = buildQuery<DoctorFilters>({
     searchParams,
     searchableFields: ["name"],
     filterableFields: {
@@ -13,6 +20,9 @@ export async function getDoctors(searchParams: URLSearchParams) {
           slug: value,
         },
       }),
+      isActive: (value) => ({
+        isActive: value === "1",
+      }),
     },
     sortableFields: ["createdAt"],
     defaultSort: "createdAt",
@@ -20,7 +30,6 @@ export async function getDoctors(searchParams: URLSearchParams) {
 
   const where = {
     ...query.where,
-    isActive: true,
   };
 
   const [data, total] = await Promise.all([
@@ -41,8 +50,10 @@ export async function getDoctors(searchParams: URLSearchParams) {
           select: {
             label: true,
             slug: true,
+            title: true,
           },
         },
+        isActive: true,
         isOnline: true,
         schedules: {
           select: {
@@ -97,6 +108,7 @@ export async function getDoctorBySlug(slug: string[]): Promise<IDoctorCard> {
         select: {
           label: true,
           slug: true,
+          title: true,
         },
       },
       bio: true,
@@ -109,6 +121,7 @@ export async function getDoctorBySlug(slug: string[]): Promise<IDoctorCard> {
         },
       },
       experience: true,
+      isActive: true,
       experiences: {
         select: {
           title: true,
