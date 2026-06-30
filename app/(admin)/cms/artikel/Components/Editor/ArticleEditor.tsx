@@ -10,6 +10,7 @@ import Toolbar from "./Toolbar";
 import BubbleMenuBar from "./BubbleMenuBar";
 
 import { useArticleEditor } from "../../hooks/useArticleEditor";
+import { useImageUpload } from "@/hooks/useUploadImage";
 
 type Props = {
   value?: JSONContent;
@@ -24,6 +25,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
   });
 
   const loadedRef = useRef(false);
+  const { selectImage } = useImageUpload(editor);
 
   useEffect(() => {
     if (!editor) return;
@@ -36,6 +38,18 @@ export default function ArticleEditor({ value, onChange }: Props) {
 
     loadedRef.current = true;
   }, [editor, value]);
+
+  useEffect(() => {
+    const handler = () => {
+      selectImage();
+    };
+
+    window.addEventListener("tiptap-image-upload", handler);
+
+    return () => {
+      window.removeEventListener("tiptap-image-upload", handler);
+    };
+  }, [selectImage]);
 
   return (
     <div
