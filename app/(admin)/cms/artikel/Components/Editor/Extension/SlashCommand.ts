@@ -47,7 +47,9 @@ export const SlashCommand = Extension.create<SlashCommandOptions>({
         command: ({ editor, range, props }) => {
           editor.chain().focus().deleteRange(range).run();
 
-          props.action(editor);
+          setTimeout(() => {
+            props.action(editor);
+          }, 0);
 
           requestAnimationFrame(() => {
             editor.commands.scrollIntoView();

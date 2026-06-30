@@ -229,19 +229,120 @@ export function createToolbarItems(setLink: () => void): ToolbarItem[] {
 
       action: () => setLink(),
     },
-
     {
       id: "image",
-      label: "Image",
-      title: "Image",
-      description: "Upload image",
-      groups: ["slash"],
-      keywords: ["image", "photo", "picture"],
 
-      action: () => {
-        // next phase
+      label: "Image",
+
+      title: "Image",
+
+      groups: ["slash"],
+
+      keywords: ["image", "photo"],
+
+      action: (editor) => {
+        const event = new CustomEvent("tiptap-image-upload", {
+          detail: editor,
+        });
+
+        window.dispatchEvent(event);
       },
     },
+    // {
+    //   id: "image",
+
+    //   label: "Image",
+
+    //   title: "Image",
+
+    //   description: "Upload image",
+
+    //   groups: ["slash"],
+
+    //   keywords: ["image", "photo", "picture"],
+
+    //   action: (editor) => {
+    //     console.log("IMAGE COMMAND RUN");
+
+    //     const input = document.createElement("input");
+
+    //     input.type = "file";
+
+    //     input.accept = "image/*";
+
+    //     input.onchange = () => {
+    //       const file = input.files?.[0];
+
+    //       console.log("FILE", file);
+    //     };
+
+    //     document.body.appendChild(input);
+
+    //     input.click();
+
+    //     input.remove();
+    //   },
+    // },
+    // {
+    //   id: "image",
+    //   label: "Image",
+    //   title: "Image",
+    //   description: "Upload image",
+
+    //   groups: ["slash"],
+    //   keywords: ["image", "photo", "picture", "upload"],
+
+    //   action: (editor) => {
+    //     const input = document.createElement("input");
+
+    //     input.type = "file";
+
+    //     input.accept = "image/*";
+
+    //     input.style.display = "none";
+
+    //     document.body.appendChild(input);
+
+    //     input.onchange = async () => {
+    //       const file = input.files?.[0];
+
+    //       if (!file) {
+    //         return;
+    //       }
+
+    //       const form = new FormData();
+
+    //       form.append("file", file);
+
+    //       form.append(
+    //         "upload_preset",
+    //         process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!,
+    //       );
+
+    //       const response = await fetch(
+    //         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    //         {
+    //           method: "POST",
+    //           body: form,
+    //         },
+    //       );
+
+    //       const data = await response.json();
+
+    //       editor
+    //         .chain()
+    //         .focus()
+    //         .setImage({
+    //           src: data.secure_url,
+    //         })
+    //         .run();
+
+    //       input.remove();
+    //     };
+
+    //     input.click();
+    //   },
+    // },
   ];
 }
 

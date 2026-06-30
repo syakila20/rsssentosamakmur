@@ -8,7 +8,7 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
-
+import Image from "@tiptap/extension-image";
 import { createToolbarItems } from "../Components/Editor/ToolbarItems";
 
 import { SlashCommand } from "../Components/Editor/Extension/SlashCommand";
@@ -50,6 +50,11 @@ export function useArticleEditor({ content, onChange }: Props) {
         items: createToolbarItems(() => {}).filter((item) =>
           item.groups.includes("slash"),
         ),
+      }),
+
+      Image.configure({
+        inline: false,
+        allowBase64: false,
       }),
     ],
 
