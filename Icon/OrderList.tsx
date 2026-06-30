@@ -1,0 +1,27 @@
+import { SvgTextProps } from "./type";
+
+export default function OrderList({
+  className,
+  height = "18px",
+  onClick,
+  style,
+}: SvgTextProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      role="img"
+      width="100%"
+      height={height}
+      style={style}
+      className={className}
+      onClick={onClick}
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M3 16h2v.5H3v1h2v.5H3v1h3v-4H3zM4 6h1v3h1V5H4zm-1 5h2v.5H3V14h3v-1H4v-.5h2V10H3zm5 0h13v2H8zm0-5h13v2H8zm0 10h13v2H8z"
+      ></path>
+    </svg>
+  );
+}

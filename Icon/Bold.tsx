@@ -1,0 +1,27 @@
+import { SvgTextProps } from "./type";
+
+export default function Bold({
+  className,
+  height = "18px",
+  onClick,
+  style,
+}: SvgTextProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      role="img"
+      width="100%"
+      height={height}
+      style={style}
+      className={className}
+      onClick={onClick}
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M13 4.5H7c-.83 0-1.5.67-1.5 1.5v12c0 .83.67 1.5 1.5 1.5h6.5c2.48 0 4.5-2.02 4.5-4.5c0-1.3-.56-2.46-1.44-3.28c.58-.76.94-1.69.94-2.72c0-2.48-2.02-4.5-4.5-4.5m0 3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H8.5v-3zm.5 9h-5v-3h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5"
+      ></path>
+    </svg>
+  );
+}
