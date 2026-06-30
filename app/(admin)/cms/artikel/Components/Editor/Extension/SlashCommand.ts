@@ -1,15 +1,22 @@
-import { Editor, Extension } from "@tiptap/core";
+import { Extension } from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
+import { ReactRenderer } from "@tiptap/react";
+import tippy, { Instance } from "tippy.js";
 import { ToolbarItem } from "../toolbar.type";
+import SlashCommandList, {
+  SlashCommandListRef,
+} from "../Suggestion/SlashCommandList";
 
-export const SlashExtension = Extension.create({
+export interface SlashCommandOptions {
+  items: ToolbarItem[];
+}
+
+export const SlashCommand = Extension.create<SlashCommandOptions>({
   name: "slash-command",
 
   addOptions() {
     return {
-      suggestion: {
-        char: "/",
-      },
+      items: [],
     };
   },
 
@@ -21,48 +28,88 @@ export const SlashExtension = Extension.create({
         char: "/",
 
         items: ({ query }) => {
-          const items = this.options.items?.() ?? [];
+          return this.options.items
+            .filter((item) => item.groups.includes("slash"))
+            .filter((item) => {
+              const keyword = [
+                item.label,
+                item.title,
+                item.description,
+                ...(item.keywords ?? []),
+              ]
+                .join(" ")
+                .toLowerCase();
 
-          return items.filter((item: any) =>
-            (item.title || item.label)
-              .toLowerCase()
-              .includes(query.toLowerCase()),
-          );
+              return keyword.includes(query.toLowerCase());
+            });
         },
 
-        command: ({ editor, props }) => {
+        command: ({ editor, range, props }) => {
+          editor.chain().focus().deleteRange(range).run();
+
           props.action(editor);
+
+          requestAnimationFrame(() => {
+            editor.commands.scrollIntoView();
+          });
         },
 
-        render: this.options.render,
+        render() {
+          let component: ReactRenderer<SlashCommandListRef>;
+          let popup: Instance[];
+
+          return {
+            onStart(props) {
+              component = new ReactRenderer(SlashCommandList, {
+                props,
+                editor: props.editor,
+              });
+
+              popup = tippy("body", {
+                getReferenceClientRect: props.clientRect as any,
+                appendTo: () => document.body,
+                content: component.element,
+                interactive: true,
+                trigger: "manual",
+                placement: "auto-start",
+                showOnCreate: true,
+                popperOptions: {
+                  modifiers: [
+                    {
+                      name: "preventOverflow",
+                      options: {
+                        padding: 12,
+                      },
+                    },
+                  ],
+                },
+              });
+            },
+
+            onUpdate(props) {
+              component.updateProps(props);
+
+              popup[0].setProps({
+                getReferenceClientRect: props.clientRect as any,
+              });
+            },
+
+            onKeyDown(props) {
+              if (props.event.key === "Escape") {
+                popup[0].hide();
+                return true;
+              }
+
+              return component.ref?.onKeyDown(props) ?? false;
+            },
+
+            onExit() {
+              popup[0].destroy();
+              component.destroy();
+            },
+          };
+        },
       }),
     ];
   },
 });
-
-export function executeSlashItem(
-  editor: Editor,
-  item: ToolbarItem,
-  close: () => void,
-) {
-  const { from } = editor.state.selection;
-
-  const textBefore = editor.state.doc.textBetween(Math.max(0, from - 50), from);
-
-  const match = textBefore.match(/\/([a-zA-Z0-9]*)$/);
-
-  const slashLength = match?.[0]?.length ?? 0;
-
-  editor
-    .chain()
-    .focus()
-    .deleteRange({
-      from: from - slashLength,
-      to: from,
-    })
-    .run();
-
-  item.action(editor);
-
-  close();
-}

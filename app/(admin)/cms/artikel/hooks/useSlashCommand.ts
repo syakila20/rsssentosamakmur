@@ -1,141 +1,73 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Editor } from "@tiptap/react";
-import { ToolbarItem } from "../Components/Editor/toolbar.type";
-import { executeSlashItem } from "../Components/Editor/Extension/SlashCommand";
+import { ReactRenderer } from "@tiptap/react";
+import tippy, { Instance } from "tippy.js";
+import SlashList, {
+  SlashListRef,
+} from "../Components/Editor/Suggestion/SlashCommandList";
 
-type Props = {
-  editor: Editor | null;
-  items: ToolbarItem[];
-};
+export function createSlashRenderer() {
+  return () => {
+    let component: ReactRenderer<SlashListRef> | null = null;
 
-export function useSlashCommand({ editor, items }: Props) {
-  const [open, setOpen] = useState(false);
+    let popup: Instance | null = null;
 
-  const [query, setQuery] = useState("");
+    return {
+      onStart(props: any) {
+        component = new ReactRenderer(SlashList, {
+          editor: props.editor,
+          props,
+        });
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+        if (!props.clientRect) {
+          return;
+        }
 
-  const [position, setPosition] = useState({
-    left: 0,
-    top: 0,
-  });
+        const instances = tippy(document.body, {
+          getReferenceClientRect: props.clientRect,
+          appendTo: () => document.body,
+          content: component.element,
+          interactive: true,
+          trigger: "manual",
+          placement: "bottom-start",
+        });
 
-  const filteredItems = useMemo(() => {
-    if (!query) return items;
+        popup = instances?.[0];
 
-    return items.filter((item) =>
-      (item.title || item.label).toLowerCase().includes(query.toLowerCase()),
-    );
-  }, [items, query]);
+        popup?.show();
+      },
 
-  useEffect(() => {
-    if (!editor) return;
+      onUpdate(props: any) {
+        component?.updateProps(props);
 
-    const handleUpdate = () => {
-      const { from } = editor.state.selection;
+        if (!props.clientRect || !popup) {
+          return;
+        }
 
-      const textBefore = editor.state.doc.textBetween(
-        Math.max(0, from - 50),
-        from,
-      );
+        popup.setProps({
+          getReferenceClientRect: props.clientRect,
+        });
+      },
 
-      const match = textBefore.match(/\/([a-zA-Z0-9]*)$/);
+      onKeyDown(props: any) {
+        if (props.event.key === "Escape") {
+          popup?.hide();
 
-      if (!match) {
-        setOpen(false);
-        return;
-      }
+          return true;
+        }
 
-      const coords = editor.view.coordsAtPos(from);
+        return component?.ref?.onKeyDown(props) ?? false;
+      },
 
-      const popupHeight = 320;
+      onExit() {
+        popup?.destroy();
 
-      const showAbove = window.innerHeight - coords.bottom < popupHeight;
+        component?.destroy();
 
-      setPosition({
-        left: coords.left,
-        top: showAbove ? coords.top - popupHeight : coords.bottom + 8,
-      });
-
-      setQuery(match[1] ?? "");
-
-      setSelectedIndex(0);
-
-      setOpen(true);
+        popup = null;
+        component = null;
+      },
     };
-
-    editor.on("update", handleUpdate);
-
-    return () => {
-      editor.off("update", handleUpdate);
-    };
-  }, [editor]);
-
-  useEffect(() => {
-    if (!open || !editor) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        setOpen(false);
-        return;
-      }
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        setSelectedIndex((prev) =>
-          prev >= filteredItems.length - 1 ? 0 : prev + 1,
-        );
-        return;
-      }
-
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        setSelectedIndex((prev) =>
-          prev <= 0 ? filteredItems.length - 1 : prev - 1,
-        );
-        return;
-      }
-
-      if (event.key !== "Enter") {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      const item = filteredItems[selectedIndex];
-
-      if (!item || !editor) return;
-
-      executeSlashItem(editor, item, () => setOpen(false));
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, editor, filteredItems, selectedIndex]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const handleWindowScroll = () => {
-      setOpen(false);
-    };
-
-    window.addEventListener("scroll", handleWindowScroll, false);
-
-    return () =>
-      window.removeEventListener("scroll", handleWindowScroll, false);
-  }, [open]);
-
-  return {
-    open,
-    position,
-    selectedIndex,
-    filteredItems,
-    close: () => setOpen(false),
   };
 }

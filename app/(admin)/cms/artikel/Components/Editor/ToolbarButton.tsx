@@ -6,6 +6,7 @@ type Props = {
   label: string;
   active?: boolean;
   onClick(): void;
+  icon?: React.ReactNode;
 };
 
 const buttonClass =
@@ -13,14 +14,14 @@ const buttonClass =
 
 const activeClass = "bg-slate-900 text-white";
 
-export default function ToolbarButton({ label, active, onClick }: Props) {
+export default function ToolbarButton({ label, active, onClick, icon }: Props) {
   return (
     <button
       type="button"
       className={clsx(buttonClass, active && activeClass)}
       onClick={onClick}
     >
-      {label}
+      {icon}
     </button>
   );
 }

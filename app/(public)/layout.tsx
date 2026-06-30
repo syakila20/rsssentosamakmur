@@ -8,12 +8,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col antialiased bg-linear-to-br from-fuchsia-50 to-teal-50">
+    <body className="min-h-screen flex flex-col antialiased bg-linear-to-br from-fuchsia-50 to-teal-50">
       <Navbar />
 
       <main className="flex-1">{children}</main>
       <FooterSection />
       <div id="modal-root" />
-    </div>
+    </body>
   );
 }

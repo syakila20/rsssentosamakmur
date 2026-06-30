@@ -3,18 +3,17 @@
 import { JSONContent } from "@tiptap/core";
 import { EditorContent } from "@tiptap/react";
 
-import Toolbar from "./Toolbar";
-import { useArticleEditor } from "../../hooks/useArticleEditor";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
-import BubbleMenuBar from "./BubbleMenuBar";
-import { useSlashCommand } from "../../hooks/useSlashCommand";
+import { useEffect, useRef } from "react";
 
-import { getToolbarItems, getItemsByGroup } from "./ToolbarItems";
-import SlashCommand from "./SlashCommand";
-import { executeSlashItem } from "./Extension/SlashCommand";
+import Toolbar from "./Toolbar";
+import BubbleMenuBar from "./BubbleMenuBar";
+
+import { useArticleEditor } from "../../hooks/useArticleEditor";
+
 type Props = {
   value?: JSONContent;
+
   onChange?: (json: JSONContent, html: string) => void;
 };
 
@@ -23,14 +22,20 @@ export default function ArticleEditor({ value, onChange }: Props) {
     content: value,
     onChange,
   });
-  const toolbarItems = editor ? getToolbarItems(editor, () => {}) : [];
 
-  const slashItems = getItemsByGroup(toolbarItems, "slash");
+  const loadedRef = useRef(false);
 
-  const slash = useSlashCommand({
-    editor,
-    items: slashItems,
-  });
+  useEffect(() => {
+    if (!editor) return;
+
+    if (!value) return;
+
+    if (loadedRef.current) return;
+
+    editor.commands.setContent(value, false);
+
+    loadedRef.current = true;
+  }, [editor, value]);
 
   return (
     <div
@@ -45,22 +50,16 @@ export default function ArticleEditor({ value, onChange }: Props) {
 
       <BubbleMenuBar editor={editor} />
 
-      {editor && (
-        <SlashCommand
-          editor={editor}
-          items={slash.filteredItems}
-          open={slash.open}
-          position={slash.position}
-          selectedIndex={slash.selectedIndex}
-          onClose={slash.close}
-        />
-      )}
-
       <EditorContent
         editor={editor}
-        className={clsx(
-          "min-h-125 p-6 article-content article-editor max-w-none focus:outline-none bg-slate-900",
-        )}
+        className="
+ article-editor
+article-content
+min-h-[600px]
+max-w-none
+p-6
+outline-none
+  "
       />
     </div>
   );

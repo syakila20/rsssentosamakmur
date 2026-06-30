@@ -3,7 +3,7 @@
 import { Editor } from "@tiptap/react";
 
 import ToolbarButton from "./ToolbarButton";
-import { getToolbarItems, getItemsByGroup } from "./ToolbarItems";
+import { createToolbarItems, getItemsByGroup } from "./ToolbarItems";
 
 type Props = {
   editor: Editor | null;
@@ -34,7 +34,7 @@ export default function Toolbar({ editor }: Props) {
       .run();
   }
 
-  const items = getToolbarItems(editor, setLink);
+  const items = createToolbarItems(setLink);
 
   const toolbarItems = getItemsByGroup(items, "toolbar");
   return (
@@ -60,6 +60,7 @@ export default function Toolbar({ editor }: Props) {
         <ToolbarButton
           key={item.id}
           label={item.label}
+          icon={item?.icon}
           active={item.isActive?.(editor)}
           onClick={() => item.action(editor)}
         />

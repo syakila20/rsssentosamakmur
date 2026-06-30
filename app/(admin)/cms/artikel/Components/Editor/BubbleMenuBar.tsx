@@ -1,8 +1,8 @@
 "use client";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { Editor } from "@tiptap/react";
-import { getItemsByGroup, getToolbarItems } from "./ToolbarItems";
 import ToolbarButton from "./ToolbarButton";
+import { createToolbarItems, getItemsByGroup } from "./ToolbarItems";
 
 type Props = {
   editor: Editor | null;
@@ -33,10 +33,30 @@ export default function BubbleMenuBar({ editor }: Props) {
       .run();
   }
 
-  const items = getToolbarItems(editor, setLink);
+  const items = createToolbarItems(setLink);
   const bubbleItems = getItemsByGroup(items, "bubble");
   return (
-    <BubbleMenu editor={editor}>
+    <BubbleMenu
+      editor={editor}
+      shouldShow={({ editor }) => {
+        const { from, to } = editor.state.selection;
+
+        // tidak ada selection
+        if (from === to) {
+          return false;
+        }
+
+        // select all document
+        const isAllSelected =
+          from === 0 && to === editor.state.doc.content.size;
+
+        if (isAllSelected) {
+          return false;
+        }
+
+        return true;
+      }}
+    >
       <div
         className="
           flex
@@ -51,6 +71,7 @@ export default function BubbleMenuBar({ editor }: Props) {
         {bubbleItems.map((item) => (
           <ToolbarButton
             key={item.id}
+            icon={item?.icon}
             label={item.label}
             active={item.isActive?.(editor)}
             onClick={() => item.action(editor)}
