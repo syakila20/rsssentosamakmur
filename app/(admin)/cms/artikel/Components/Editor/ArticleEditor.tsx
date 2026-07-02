@@ -18,26 +18,14 @@ type Props = {
 };
 
 export default function ArticleEditor({ value, onChange }: Props) {
-  const { editor, uploading, setUploading } = useArticleEditor({
+  const { editor } = useArticleEditor({
     content: value,
     onChange,
   });
 
-  const loadedRef = useRef(false);
   const { selectImage } = useImageUpload({
     editor,
   });
-  useEffect(() => {
-    if (!editor) return;
-
-    if (!value) return;
-
-    if (loadedRef.current) return;
-
-    editor.commands.setContent(value, false);
-
-    loadedRef.current = true;
-  }, [editor, value]);
 
   useEffect(() => {
     const handler = () => {

@@ -9,8 +9,9 @@ import { useArticleForm } from "../../hooks/useArticleForm";
 import { Button } from "@/Component/Button/Button";
 import { IDetailArticle } from "@/modules/article/type";
 import ArticleEditor from "../Editor/ArticleEditor";
-import FooterAdmin from "@/Component/Footer/FooterAdmin";
 import AdminPage from "@/app/(admin)/AdminPage";
+import Toast from "@/Component/Toast/Toast";
+import { createArticleFormState } from "../../hooks/article.reducer";
 
 interface IArticleCreatePage {
   categories: IOption[];
@@ -28,24 +29,34 @@ export default function ArticleCreatePage({
   content,
 }: IArticleCreatePage) {
   const [file, setFile] = useState<File | null>(null);
-  const preview = file ? URL.createObjectURL(file) : null;
-  const { state, updateField, updateContent, submit, autosaveStatus } =
-    useArticleForm({
-      idArticle,
-    });
+  const preview = file ? URL.createObjectURL(file) : "";
+  console.log("??", { content });
+  const {
+    state,
+    updateField,
+    updateTitle,
+    submit,
+    autosaveStatus,
+    updateEditor,
+  } = useArticleForm({
+    idArticle,
+    initialState: createArticleFormState(content),
+  });
 
-  useEffect(() => {
-    if (!isCreate) {
-      const reshapeTags = content?.tags?.map(
-        (i) => `${i?.tag?.slug}_${i?.tag?.id}`,
-      );
-      updateField("categoryId", content?.category.id?.toString() || "");
-      updateField("title", content?.title || "");
-      updateField("tagIds", reshapeTags || []);
-      updateField("content", content?.content);
-      updateField("contentJson", content?.contentJson as string);
-    }
-  }, [isCreate, content?.id, content?.category.id]);
+  // useEffect(() => {
+  //   if (!isCreate) {
+  //     const reshapeTags = content?.tags?.map(
+  //       (i) => `${i?.tag?.slug}_${i?.tag?.id}`,
+  //     );
+  //     setInitialData({
+  //       categoryId: content?.category.id?.toString() || "",
+  //       contentJson: content?.contentJson as string,
+  //       title: content?.title || "",
+  //       tagIds: reshapeTags || [],
+  //       content: content?.content,
+  //     });
+  //   }
+  // }, [isCreate, content?.id, content?.category.id]);
 
   return (
     <AdminPage
@@ -64,19 +75,15 @@ export default function ArticleCreatePage({
         </Button>,
       ]}
     >
-      <div className="mb-2 text-right text-sm">
-        {autosaveStatus === "saving" && (
-          <span className="text-yellow-600">Menyimpan...</span>
-        )}
-
-        {autosaveStatus === "saved" && (
-          <span className="text-green-600">Tersimpan ✓</span>
-        )}
-
-        {autosaveStatus === "error" && (
-          <span className="text-red-600">Gagal menyimpan</span>
-        )}
-      </div>
+      <Toast
+        show={["saved", "error"].includes(autosaveStatus)}
+        position="bottom-left"
+        message={
+          autosaveStatus === "error"
+            ? "Gagal Menyimpan"
+            : "Berhasil Update Data"
+        }
+      />
       <div
         className="
             grid
@@ -95,7 +102,7 @@ export default function ArticleCreatePage({
             <Input
               placeholder="Input Judul"
               value={state.title}
-              onChange={(e) => updateField("title", e.target.value)}
+              onChange={(e) => updateTitle(e.target.value)}
             />
           </WrappingInputLabel>
 
@@ -138,17 +145,9 @@ export default function ArticleCreatePage({
               state.contentJson ? JSON.parse(state.contentJson) : undefined
             }
             onChange={(json, html) => {
-              updateContent(JSON.stringify(json), html);
+              updateEditor(JSON.stringify(json), html);
             }}
           />
-          {/* 
-                Masukkan editor:
-                
-                <Tiptap />
-                <CKEditor />
-                <Lexical />
-
-              */}
         </div>
       </WrappingInputLabel>
     </AdminPage>

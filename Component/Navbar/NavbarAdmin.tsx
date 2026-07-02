@@ -3,10 +3,10 @@
 import SvgMenu from "@/Icon/Menu";
 import { useSidebar } from "../Sidebar/SidebarContext";
 import { useEffect, useRef, useState } from "react";
-
 import SafeImage from "../SafeImage/SafeImage";
-
+import { useRouter } from "next/navigation";
 import { Breadcrumb } from "../Breadcrumb/Breadcrumb";
+import { http } from "@/lib/api/http";
 
 interface INavbarAdmin {
   name: string;
@@ -19,6 +19,14 @@ const NavbarAdmin: React.FC<INavbarAdmin> = (props) => {
   const { collapsed, toggle } = useSidebar();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  async function handleLogout(e: React.FormEvent) {
+    e.preventDefault();
+
+    await http.post("/api/auth/logout");
+
+    router.push("/");
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -138,6 +146,7 @@ const NavbarAdmin: React.FC<INavbarAdmin> = (props) => {
 
               <div className="border-t border-slate-100 py-2">
                 <button
+                  onClick={handleLogout}
                   className="
           w-full text-left
           px-4 py-2.5

@@ -1,3 +1,5 @@
+import { IDetailArticle } from "@/modules/article/type";
+
 export type CreateArticlePayload = {
   title: string;
   excerpt?: string;
@@ -32,16 +34,27 @@ export const initialArticleState: ArticleFormState = {
 
 export type ArticleAction =
   | {
+      /**
+       * Update satu field.
+       */
       type: "UPDATE_FIELD";
-      field: keyof CreateArticlePayload;
-      value: CreateArticlePayload[keyof CreateArticlePayload];
+      field: ArticleField;
+      value: CreateArticlePayload[ArticleField];
     }
   | {
-      type: "UPDATE_CONTENT";
-      payload: {
-        contentJson: string;
-        content: string;
-      };
+      /**
+       * Update beberapa field sekaligus.
+       */
+      type: "UPDATE_FIELDS";
+      payload: Partial<CreateArticlePayload>;
+    }
+  | {
+      /**
+       * Digunakan ketika membuka halaman Edit.
+       * Mengisi seluruh form dari data server.
+       */
+      type: "SET_INITIAL_DATA";
+      payload: CreateArticlePayload;
     }
   | {
       type: "SET_LOADING";
@@ -56,19 +69,23 @@ export function articleReducer(
   state: ArticleFormState,
   action: ArticleAction,
 ): ArticleFormState {
-  switch (action?.type) {
+  switch (action.type) {
     case "UPDATE_FIELD":
       return {
         ...state,
         [action.field]: action.value,
       };
 
-    case "UPDATE_CONTENT":
+    case "UPDATE_FIELDS":
       return {
         ...state,
-        contentJson: action.payload.contentJson,
+        ...action.payload,
+      };
 
-        content: action.payload.content,
+    case "SET_INITIAL_DATA":
+      return {
+        ...state,
+        ...action.payload,
       };
 
     case "SET_LOADING":
@@ -86,4 +103,30 @@ export function articleReducer(
     default:
       return state;
   }
+}
+
+export function createArticleFormState(
+  article?: IDetailArticle,
+): ArticleFormState {
+  if (!article) {
+    return initialArticleState;
+  }
+  console.log("??initial", { article });
+
+  return {
+    title: article.title ?? "",
+    excerpt: article.excerpt ?? "",
+    thumbnail: article.thumbnail ?? "",
+
+    contentJson: (article.contentJson as string) ?? "",
+    content: article.content ?? "",
+
+    categoryId: article.category?.id?.toString() ?? "",
+
+    tagIds:
+      article.tags?.map((item) => `${item.tag.slug}_${item.tag.id}`) ?? [],
+
+    loading: false,
+    error: null,
+  };
 }

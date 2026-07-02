@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { autosaveArticleAction } from "@/modules/article/article.action";
 import { UpdateArticlePayload } from "@/modules/article/type";
+
 export type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 
 type Props = {
@@ -10,18 +11,39 @@ type Props = {
   delay?: number;
 };
 
-export function useAutoSave({ articleId, delay = 2000 }: Props) {
+export function useAutoSave({ articleId, delay = 4000 }: Props) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const latestPayload = useRef<Partial<UpdateArticlePayload> | null>(null);
+  const latestPayload = useRef<Partial<UpdateArticlePayload>>({});
 
   const version = useRef(0);
 
   const [status, setStatus] = useState<AutoSaveStatus>("idle");
 
-  const scheduleSave = useCallback(
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  /**
+   * Cleanup timer ketika component unmount.
+   */
+  useEffect(() => {
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+    };
+  }, []);
+
+  const schedule = useCallback(
     (payload: Partial<UpdateArticlePayload>) => {
-      latestPayload.current = payload;
+      console.log("XXAUTOSAVE", payload);
+      /**
+       * Merge payload sebelumnya.
+       * Tidak overwrite.
+       */
+      latestPayload.current = {
+        ...latestPayload.current,
+        ...payload,
+      };
 
       version.current += 1;
 
@@ -34,7 +56,7 @@ export function useAutoSave({ articleId, delay = 2000 }: Props) {
       }
 
       timer.current = setTimeout(async () => {
-        if (!latestPayload.current) {
+        if (Object.keys(latestPayload.current).length === 0) {
           return;
         }
 
@@ -46,27 +68,27 @@ export function useAutoSave({ articleId, delay = 2000 }: Props) {
             latestPayload.current,
           );
 
-          /**
-           * response lama
-           * jangan update status
-           */
           if (currentVersion !== version.current) {
             return;
           }
 
           if (!response.success) {
             setStatus("error");
-
             return;
           }
 
           setStatus("saved");
+          setLastSaved(new Date());
         } catch {
           if (currentVersion !== version.current) {
             return;
           }
 
           setStatus("error");
+        } finally {
+          setTimeout(() => {
+            setStatus("idle");
+          }, 4000);
         }
       }, delay);
     },
@@ -74,9 +96,18 @@ export function useAutoSave({ articleId, delay = 2000 }: Props) {
   );
 
   const saveNow = useCallback(async () => {
-    if (!latestPayload.current) {
+    if (Object.keys(latestPayload.current).length === 0) {
       return;
     }
+
+    /**
+     * Hindari double request.
+     */
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+
+    version.current += 1;
 
     const currentVersion = version.current;
 
@@ -94,11 +125,11 @@ export function useAutoSave({ articleId, delay = 2000 }: Props) {
 
       if (!response.success) {
         setStatus("error");
-
         return;
       }
 
       setStatus("saved");
+      setLastSaved(new Date());
     } catch {
       if (currentVersion !== version.current) {
         return;
@@ -110,7 +141,8 @@ export function useAutoSave({ articleId, delay = 2000 }: Props) {
 
   return {
     status,
-    scheduleSave,
+    lastSaved,
+    schedule,
     saveNow,
   };
 }
