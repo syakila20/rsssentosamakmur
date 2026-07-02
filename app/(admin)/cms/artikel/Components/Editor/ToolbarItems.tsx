@@ -11,9 +11,60 @@ import DividerOutline from "@/Icon/Divider";
 import Link from "@/Icon/Link";
 import QuoteLeftAltFilled from "@/Icon/Quote";
 import OrderList from "@/Icon/OrderList";
+import AlignJustify from "@/Icon/Justify";
+import AlignRight from "@/Icon/AlignRight";
+import AlignCenter from "@/Icon/Center";
+import AlignLeft from "@/Icon/AlignLeft";
 
 export function createToolbarItems(setLink: () => void): ToolbarItem[] {
   return [
+    {
+      id: "left",
+      groups: ["toolbar", "bubble", "slash"],
+      keywords: ["left", "title", "align"],
+      title: "Align Left",
+      icon: <AlignLeft />,
+
+      label: "Left",
+      isActive: (editor) => editor.isActive({ textAlign: "left" }),
+      action: (editor) => editor.chain().focus().setTextAlign("left").run(),
+    },
+
+    {
+      id: "center",
+      groups: ["toolbar", "bubble", "slash"],
+      keywords: ["center", "title", "align"],
+      title: "Center",
+      label: "Center",
+      icon: <AlignCenter />,
+
+      isActive: (editor) => editor.isActive({ textAlign: "center" }),
+      action: (editor) => editor.chain().focus().setTextAlign("center").run(),
+    },
+
+    {
+      id: "Right",
+      groups: ["toolbar", "bubble", "slash"],
+      keywords: ["right", "title", "align"],
+      title: "Align Right",
+      label: "Right",
+      icon: <AlignRight />,
+
+      isActive: (editor) => editor.isActive({ textAlign: "right" }),
+      action: (editor) => editor.chain().focus().setTextAlign("right").run(),
+    },
+
+    {
+      id: "Justify",
+      groups: ["toolbar", "bubble", "slash"],
+      keywords: ["justify", "title", "align"],
+      title: "Justify",
+      label: "Justify",
+      icon: <AlignJustify />,
+
+      isActive: (editor) => editor.isActive({ textAlign: "justify" }),
+      action: (editor) => editor.chain().focus().setTextAlign("justify").run(),
+    },
     {
       id: "paragraph",
       label: "Paragraph",
@@ -248,101 +299,6 @@ export function createToolbarItems(setLink: () => void): ToolbarItem[] {
         window.dispatchEvent(event);
       },
     },
-    // {
-    //   id: "image",
-
-    //   label: "Image",
-
-    //   title: "Image",
-
-    //   description: "Upload image",
-
-    //   groups: ["slash"],
-
-    //   keywords: ["image", "photo", "picture"],
-
-    //   action: (editor) => {
-    //     console.log("IMAGE COMMAND RUN");
-
-    //     const input = document.createElement("input");
-
-    //     input.type = "file";
-
-    //     input.accept = "image/*";
-
-    //     input.onchange = () => {
-    //       const file = input.files?.[0];
-
-    //       console.log("FILE", file);
-    //     };
-
-    //     document.body.appendChild(input);
-
-    //     input.click();
-
-    //     input.remove();
-    //   },
-    // },
-    // {
-    //   id: "image",
-    //   label: "Image",
-    //   title: "Image",
-    //   description: "Upload image",
-
-    //   groups: ["slash"],
-    //   keywords: ["image", "photo", "picture", "upload"],
-
-    //   action: (editor) => {
-    //     const input = document.createElement("input");
-
-    //     input.type = "file";
-
-    //     input.accept = "image/*";
-
-    //     input.style.display = "none";
-
-    //     document.body.appendChild(input);
-
-    //     input.onchange = async () => {
-    //       const file = input.files?.[0];
-
-    //       if (!file) {
-    //         return;
-    //       }
-
-    //       const form = new FormData();
-
-    //       form.append("file", file);
-
-    //       form.append(
-    //         "upload_preset",
-    //         process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!,
-    //       );
-
-    //       const response = await fetch(
-    //         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-    //         {
-    //           method: "POST",
-    //           body: form,
-    //         },
-    //       );
-
-    //       const data = await response.json();
-
-    //       editor
-    //         .chain()
-    //         .focus()
-    //         .setImage({
-    //           src: data.secure_url,
-    //         })
-    //         .run();
-
-    //       input.remove();
-    //     };
-
-    //     input.click();
-    //   },
-    // },
   ];
 }
 

@@ -153,29 +153,12 @@ body {
    IMAGE
 ========================================= */
 
-.prose img {
-  @apply my-6 rounded-xl shadow-sm;
-}
-
-.prose .health-figure {
-  @apply my-4;
-}
-
-.prose .health-image-wrapper {
-  @apply relative aspect-video w-full overflow-hidden rounded-3xl shadow-xl;
-}
-
-.prose .health-image-wrapper img {
-  @apply h-full w-full object-cover transition-transform duration-700;
-}
-
-.prose .health-image-wrapper:hover img {
-  @apply scale-105;
-}
 
 .prose .health-caption {
   @apply mt-4 text-center text-xs uppercase tracking-wide text-gray-400;
 }
+
+
 
 
 .prose hr {
@@ -195,18 +178,23 @@ body {
 }
 
 .slash-scroll {
-  scrollbar-width: thin;
-}
+            scrollbar-width: thin;
+            scrollbar-color: #475569 transparent;
+          }
 
-.slash-scroll::-webkit-scrollbar {
-  width: 1px;
-}
+          .slash-scroll::-webkit-scrollbar {
+            width: 6px;
+          }
 
-.slash-scroll::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 999px;
-}
+          .slash-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
 
-.slash-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
+          .slash-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 999px;
+          }
+
+          .slash-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+          }

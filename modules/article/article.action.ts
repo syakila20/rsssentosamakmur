@@ -63,7 +63,15 @@ export async function restoreArticleAction(id: number) {
 
 export async function autosaveArticleAction(
   id: number,
-  payload: UpdateArticlePayload,
+  payload: Partial<UpdateArticlePayload>,
 ) {
-  return autosaveArticle(id, payload);
+  try {
+    const article = await autosaveArticle(id, payload);
+
+    return apiResponse(article, null, "Draft berhasil disimpan");
+  } catch (error) {
+    return apiErrorResponse(
+      error instanceof Error ? error.message : "Terjadi kesalahan",
+    );
+  }
 }

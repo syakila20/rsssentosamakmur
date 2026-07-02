@@ -41,6 +41,10 @@ export default function BubbleMenuBar({ editor }: Props) {
       shouldShow={({ editor }) => {
         const { from, to } = editor.state.selection;
 
+        if (editor.isActive("image")) {
+          return false;
+        }
+
         // tidak ada selection
         if (from === to) {
           return false;

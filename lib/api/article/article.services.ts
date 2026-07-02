@@ -99,7 +99,7 @@ export async function getArticleBySlug(slug: string) {
   const article = await prisma.article.findFirst({
     where: {
       slug,
-      published: true,
+      // published: true,
     },
 
     select: {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   forwardRef,
   useEffect,
@@ -11,6 +12,7 @@ import { ToolbarItem } from "../toolbar.type";
 type Props = {
   items: ToolbarItem[];
   command: (item: ToolbarItem) => void;
+  onClose: () => void;
 };
 
 export type SlashCommandListRef = {
@@ -41,7 +43,7 @@ function getGroup(item: ToolbarItem) {
 }
 
 const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
-  ({ items, command }, ref) => {
+  ({ items, command, onClose }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -88,7 +90,6 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
         onKeyDown({ event }) {
           if (event.key === "ArrowDown") {
             setSelectedIndex((index) => (index + 1) % flatItems.length);
-
             return true;
           }
 
@@ -96,13 +97,11 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
             setSelectedIndex(
               (index) => (index - 1 + flatItems.length) % flatItems.length,
             );
-
             return true;
           }
 
           if (event.key === "Enter") {
             selectItem(selectedIndex);
-
             return true;
           }
 
@@ -116,6 +115,8 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
       [flatItems, selectedIndex],
     );
 
+    let globalIndex = 0;
+
     return (
       <div
         className="
@@ -123,34 +124,39 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
           overflow-hidden
           rounded-xl
           border
-          bg-white
+          border-slate-700
+          bg-slate-800
           shadow-2xl
         "
       >
         <div
           className="
-            max-h-96
+            slash-scroll
+            max-h-72
             overflow-y-auto
             p-2
           "
         >
           {Object.entries(grouped).map(([group, groupItems]) => (
-            <div key={group}>
+            <div key={group} className="mb-2 last:mb-0">
               <div
                 className="
-                        px-3
-                        py-2
-                        text-xs
-                        font-semibold
-                        uppercase
-                        text-slate-400
-                      "
+                  px-3
+                  py-2
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-wider
+                  text-slate-500
+                "
               >
                 {group}
               </div>
 
               {groupItems.map((item) => {
-                const index = flatItems.indexOf(item);
+                const index = globalIndex++;
+
+                const active = selectedIndex === index;
 
                 return (
                   <button
@@ -161,45 +167,61 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
                     type="button"
                     onClick={() => selectItem(index)}
                     className={`
-                                flex
-                                w-full
-                                gap-3
-                                rounded-lg
-                                p-3
-                                text-left
-                                transition
+                      group
+                      mb-1
+                      flex
+                      w-full
+                      gap-3
+                      rounded-lg
+                      p-3
+                      text-left
+                      transition-colors
+                      duration-150
 
-                                ${
-                                  selectedIndex === index
-                                    ? "bg-slate-100"
-                                    : "hover:bg-slate-50"
-                                }
-                              `}
+                      ${active ? "bg-slate-700" : "hover:bg-slate-100"}
+                    `}
                   >
                     <div
-                      className="
-                                  mt-1
-                                "
+                      className={`
+                        mt-1
+                        transition-colors
+                        ${
+                          active
+                            ? "text-white"
+                            : "text-slate-400 group-hover:text-slate-700"
+                        }
+                      `}
                     >
                       {item.icon}
                     </div>
 
-                    <div>
+                    <div className="flex-1">
                       <div
-                        className="
-                                    text-sm
-                                    font-medium
-                                  "
+                        className={`
+                          text-sm
+                          font-medium
+                          transition-colors
+                          ${
+                            active
+                              ? "text-white"
+                              : "text-slate-200 group-hover:text-slate-800"
+                          }
+                        `}
                       >
                         {item.label}
                       </div>
 
                       {item.description && (
                         <div
-                          className="
-                                        text-xs
-                                        text-slate-500
-                                      "
+                          className={`
+                            text-xs
+                            transition-colors
+                            ${
+                              active
+                                ? "text-slate-300"
+                                : "text-slate-500 group-hover:text-slate-600"
+                            }
+                          `}
                         >
                           {item.description}
                         </div>
@@ -212,9 +234,10 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
           ))}
         </div>
 
-        <div
+        {/* <div
           className="
             border-t
+            border-slate-700
             p-2
           "
         >
@@ -233,13 +256,15 @@ const SlashCommandList = forwardRef<SlashCommandListRef, Props>(
               px-3
               py-2
               text-sm
-              text-slate-500
-              hover:bg-slate-100
+              text-slate-400
+              transition-colors
+              hover:bg-slate-700
+              hover:text-white
             "
           >
             Cancel
           </button>
-        </div>
+        </div> */}
       </div>
     );
   },
