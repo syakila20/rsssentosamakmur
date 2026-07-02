@@ -2,16 +2,15 @@
 
 import { JSONContent } from "@tiptap/core";
 import { useEditor } from "@tiptap/react";
-
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
-import Image from "@tiptap/extension-image";
 import { createToolbarItems } from "../Components/Editor/ToolbarItems";
-
 import { SlashCommand } from "../Components/Editor/Extension/SlashCommand";
+import { CustomImage } from "../Components/Editor/Extension/Image/Image";
+import { useState } from "react";
 
 type Props = {
   content?: JSONContent;
@@ -20,6 +19,7 @@ type Props = {
 };
 
 export function useArticleEditor({ content, onChange }: Props) {
+  const [uploading, setUploading] = useState(false);
   const editor = useEditor({
     immediatelyRender: false,
 
@@ -52,7 +52,7 @@ export function useArticleEditor({ content, onChange }: Props) {
         ),
       }),
 
-      Image.configure({
+      CustomImage.configure({
         inline: false,
         allowBase64: false,
       }),
@@ -64,6 +64,11 @@ export function useArticleEditor({ content, onChange }: Props) {
       onChange?.(editor.getJSON(), editor.getHTML());
     },
   });
+  console.log("??editor", editor?.commands);
 
-  return editor;
+  return {
+    editor,
+    uploading,
+    setUploading,
+  };
 }

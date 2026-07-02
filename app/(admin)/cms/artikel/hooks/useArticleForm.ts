@@ -4,16 +4,28 @@ import {
   CreateArticlePayload,
   initialArticleState,
 } from "./article.reducer";
+
 import {
   createArticleAction,
   updateArticleAction,
 } from "@/modules/article/article.action";
+
 import { parseSlugId } from "@/lib/helper";
 import { useRouter } from "next/navigation";
+import { useAutoSave } from "./useAutosaveArticle";
 
-export function useArticleForm() {
+type Props = {
+  idArticle?: number;
+};
+
+export function useArticleForm({ idArticle }: Props) {
   const [state, dispatch] = useReducer(articleReducer, initialArticleState);
+
   const router = useRouter();
+
+  const autosave = useAutoSave({
+    articleId: idArticle ?? 0,
+  });
 
   function updateField<K extends keyof CreateArticlePayload>(
     field: K,
@@ -34,9 +46,20 @@ export function useArticleForm() {
         content,
       },
     });
+
+    /**
+     * Autosave hanya aktif ketika edit article.
+     * Saat create belum ada id.
+     */
+    if (idArticle) {
+      autosave.scheduleSave({
+        contentJson,
+        content,
+      });
+    }
   }
 
-  async function submit(isEdit?: boolean, idArticle?: number) {
+  async function submit(isEdit?: boolean, idArticleSubmit?: number) {
     dispatch({
       type: "SET_LOADING",
       payload: true,
@@ -48,21 +71,27 @@ export function useArticleForm() {
     });
 
     try {
-      const getIdCategory = parseSlugId(state?.categoryId);
-      const getIdTags = parseSlugId(state?.tagIds);
+      const getIdTags = parseSlugId(state.tagIds);
+
       const payload = {
         title: state.title,
+
         excerpt: state.excerpt,
+
         thumbnail: state.thumbnail,
+
         contentJson: state.contentJson,
+
         content: state.content,
-        categoryId: Number(state?.categoryId),
+
+        categoryId: Number(state.categoryId),
+
         tagIds: getIdTags?.map((e) => e.id),
       };
-      console.log("??payload", { payload });
+
       const response = isEdit
-        ? await createArticleAction(payload)
-        : await updateArticleAction(Number(idArticle), payload);
+        ? await updateArticleAction(Number(idArticleSubmit), payload)
+        : await createArticleAction(payload);
 
       if (!response.success) {
         dispatch({
@@ -73,7 +102,7 @@ export function useArticleForm() {
         return;
       }
 
-      router.push(`/cms/artikel/edit/${response?.data?.id}`);
+      router.push(`/cms/artikel/edit/${response.data?.id}`);
     } catch (error) {
       dispatch({
         type: "SET_ERROR",
@@ -92,8 +121,15 @@ export function useArticleForm() {
 
   return {
     state,
+
     updateField,
+
     updateContent,
+
     submit,
+
+    autosaveStatus: autosave.status,
+
+    saveDraft: autosave.saveNow,
   };
 }

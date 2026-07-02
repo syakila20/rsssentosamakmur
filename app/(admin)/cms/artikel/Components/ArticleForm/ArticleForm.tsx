@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import WrappingInputLabel from "@/Component/WrappingInputLabel/WrappingInputLabel";
-import { SectionTitle } from "@/Component/Typography/Typhography";
 import { Input } from "@/Component/Input/Input";
 import { Select } from "@/Component/Select/Select";
 import { ImageUpload } from "@/Component/ImageUpload/ImageUpload";
@@ -30,13 +29,11 @@ export default function ArticleCreatePage({
 }: IArticleCreatePage) {
   const [file, setFile] = useState<File | null>(null);
   const preview = file ? URL.createObjectURL(file) : null;
-  const { state, updateField, submit } = useArticleForm();
-  console.log(
-    "??xxx",
-    content?.category?.id?.toString(),
-    typeof content?.category?.id?.toString(),
-    categories,
-  );
+  const { state, updateField, updateContent, submit, autosaveStatus } =
+    useArticleForm({
+      idArticle,
+    });
+
   useEffect(() => {
     if (!isCreate) {
       const reshapeTags = content?.tags?.map(
@@ -49,7 +46,6 @@ export default function ArticleCreatePage({
       updateField("contentJson", content?.contentJson as string);
     }
   }, [isCreate, content?.id, content?.category.id]);
-  console.log("??content", { content }, { state });
 
   return (
     <AdminPage
@@ -68,6 +64,19 @@ export default function ArticleCreatePage({
         </Button>,
       ]}
     >
+      <div className="mb-2 text-right text-sm">
+        {autosaveStatus === "saving" && (
+          <span className="text-yellow-600">Menyimpan...</span>
+        )}
+
+        {autosaveStatus === "saved" && (
+          <span className="text-green-600">Tersimpan ✓</span>
+        )}
+
+        {autosaveStatus === "error" && (
+          <span className="text-red-600">Gagal menyimpan</span>
+        )}
+      </div>
       <div
         className="
             grid
@@ -129,9 +138,7 @@ export default function ArticleCreatePage({
               state.contentJson ? JSON.parse(state.contentJson) : undefined
             }
             onChange={(json, html) => {
-              console.log("??json", { json }, { html });
-              updateField("content", html);
-              updateField("contentJson", JSON.stringify(json));
+              updateContent(JSON.stringify(json), html);
             }}
           />
           {/* 
@@ -146,29 +153,4 @@ export default function ArticleCreatePage({
       </WrappingInputLabel>
     </AdminPage>
   );
-}
-{
-  /* <div
-  className="
-        flex
-        min-h-screen
-        flex-col
-      "
->
-  <div
-    className="
-          shrink-0
-        "
-  >
-    <SectionTitle>Halaman {isCreate ? "Tambah" : "Edit"} Artikel</SectionTitle>
-  </div>
-
-  <div
-    
-  >
-    
-      <FooterAdmin leftActions={[<Button key="1">Cancel</Button>]} />
-    </div>
-  </div>
-</div>; */
 }

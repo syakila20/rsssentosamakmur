@@ -1,4 +1,11 @@
-export async function uploadToCloudinary(file: File) {
+export type UploadImageResult = {
+  url: string;
+  publicId: string;
+};
+
+export async function uploadToCloudinary(
+  file: File,
+): Promise<UploadImageResult> {
   const formData = new FormData();
 
   formData.append("file", file);
@@ -19,5 +26,8 @@ export async function uploadToCloudinary(file: File) {
 
   const data = await response.json();
 
-  return data.secure_url as string;
+  return {
+    url: data.secure_url,
+    publicId: data.public_id,
+  };
 }

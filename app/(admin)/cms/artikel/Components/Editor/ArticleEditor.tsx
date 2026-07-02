@@ -3,7 +3,6 @@
 import { JSONContent } from "@tiptap/core";
 import { EditorContent } from "@tiptap/react";
 
-import clsx from "clsx";
 import { useEffect, useRef } from "react";
 
 import Toolbar from "./Toolbar";
@@ -19,14 +18,15 @@ type Props = {
 };
 
 export default function ArticleEditor({ value, onChange }: Props) {
-  const editor = useArticleEditor({
+  const { editor, uploading, setUploading } = useArticleEditor({
     content: value,
     onChange,
   });
 
   const loadedRef = useRef(false);
-  const { selectImage } = useImageUpload(editor);
-
+  const { selectImage } = useImageUpload({
+    editor,
+  });
   useEffect(() => {
     if (!editor) return;
 

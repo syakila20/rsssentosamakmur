@@ -1,25 +1,86 @@
 import DOMPurify from "isomorphic-dompurify";
-
+import { optimizeImageDefault } from "./claudnary/Optimize";
 export function sanitizeHtml(html: string) {
   return DOMPurify.sanitize(html, {
-    USE_PROFILES: { html: true },
+    USE_PROFILES: {
+      html: true,
+    },
+
+    ADD_ATTR: ["data-caption", "data-align", "data-width", "data-height"],
   });
 }
 
 export function wrapImages(html: string) {
-  return html.replace(
-    /<img([^>]*)alt="([^"]*)"([^>]*)>/g,
-    `
-    <figure class="health-figure">
-      <div class="health-image-wrapper">
-        <img $1 alt="$2" $3 loading="lazy" decoding="async" />
-      </div>
-      <figcaption class="health-caption">
-        $2
-      </figcaption>
-    </figure>
-    `,
-  );
+  return html.replace(/<img([^>]*)>/g, (match, attrs) => {
+    const captionMatch = attrs.match(/data-caption="([^"]*)"/);
+
+    const alignMatch = attrs.match(/data-align="([^"]*)"/);
+
+    const widthMatch = attrs.match(/data-width="([^"]*)"/);
+
+    const caption = captionMatch?.[1] ?? "";
+
+    const align = alignMatch?.[1] ?? "center";
+
+    const width = widthMatch?.[1];
+    const srcMatch = attrs.match(/src="([^"]*)"/);
+
+    const src = srcMatch?.[1] ?? "";
+
+    const optimizedSrc = optimizeImageDefault(src);
+
+    const imageAttrs = attrs.replace(src, optimizedSrc);
+    const style = [
+      width ? `width:${width}px` : "",
+
+      align === "center" ? "margin-left:auto;margin-right:auto" : "",
+
+      align === "right" ? "margin-left:auto" : "",
+      "border-radius:20px",
+      "box-shadow:6px 21px 25px -14px rgba(92, 87, 87, 0.16)",
+    ]
+      .filter(Boolean)
+      .join(";");
+
+    return `
+        <figure
+          class="health-figure"
+          style="text-align:${align}"
+        >
+
+          <div
+            class="health-image-wrapper"
+          >
+
+            <img
+              ${imageAttrs}
+
+              style="${style}"
+
+              loading="lazy"
+
+              decoding="async"
+            />
+
+          </div>
+
+
+          ${
+            caption
+              ? `
+              <figcaption
+                class="health-caption"
+              >
+                ${caption}
+              </figcaption>
+              `
+              : ""
+          }
+
+
+        </figure>
+      `;
+  });
 }
 
 export function injectHeadingIds(html: string) {
