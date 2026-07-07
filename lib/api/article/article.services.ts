@@ -83,6 +83,15 @@ export async function getArticles(
             name: true,
           },
         },
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
         thumbnail: true,
         publishedAt: true,
       },

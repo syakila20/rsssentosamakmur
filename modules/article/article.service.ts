@@ -93,9 +93,10 @@ export async function getArticleBySlug(slug: string) {
 }
 
 export async function publishArticle(id: number) {
-  await requirePermission("article.update");
+  const user = await requirePermission("article.create");
+  await requirePermission("article.approved");
 
-  return publishArticleRepository(id);
+  return publishArticleRepository(id, user?.name);
 }
 
 export async function deleteArticle(id: number) {

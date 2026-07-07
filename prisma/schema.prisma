@@ -96,26 +96,29 @@ model Specialty {
 }
 
 model Doctor {
-  id          Int                @id @default(autoincrement())
-  name        String             @db.NVarChar(255)
-  slug        String             @unique @db.NVarChar(255)
-  location    String             @db.NVarChar(255)
-  bio         String?            @db.NVarChar(Max)
-  experience  String             @db.NVarChar(255)
-  price       Int?
-  isOnline    Boolean            @default(false)
-  isActive    Boolean            @default(true)
-  rating      Float              @default(0)
-  reviews     Int                @default(0)
-  image       String?
-  specialtyId Int
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  deletedAt   DateTime?
-  specialty   Specialty          @relation(fields: [specialtyId], references: [id])
-  experiences DoctorExperience[]
-  educations  Education[]
-  schedules   Schedule[]
+  id            String             @id @default(uuid())
+  name          String             @db.NVarChar(255)
+  slug          String             @unique @db.NVarChar(255)
+  location      String             @db.NVarChar(255)
+  bio           String?            @db.NVarChar(Max)
+  experience    String             @db.NVarChar(255)
+  price         Int?
+  email         String?            @db.NVarChar(255)
+  phoneNumber   String?            @db.NVarChar(200)
+  isOnline      Boolean            @default(false)
+  isActive      Boolean            @default(true)
+  rating        Float              @default(0)
+  reviews       Int                @default(0)
+  image         String?
+  imagePublicId String?
+  specialtyId   Int
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?
+  specialty     Specialty          @relation(fields: [specialtyId], references: [id])
+  experiences   DoctorExperience[]
+  educations    Education[]
+  schedules     Schedule[]
 
   @@index([specialtyId])
   @@index([slug])
@@ -123,11 +126,11 @@ model Doctor {
 }
 
 model Schedule {
-  id        Int    @id @default(autoincrement())
+  id        String @id @default(uuid())
   day       Int
   startTime Int
   endTime   Int
-  doctorId  Int
+  doctorId  String
   doctor    Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   @@index([doctorId])
@@ -135,24 +138,27 @@ model Schedule {
 }
 
 model Education {
-  id         Int    @id @default(autoincrement())
-  degree     String @db.NVarChar(255)
-  university String @db.NVarChar(255)
-  doctorId   Int
-  doctor     Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  id             String  @id @default(uuid())
+  degree         String  @db.NVarChar(255)
+  university     String  @db.NVarChar(255)
+  program        String? @db.NVarChar(255)
+  graduationYear Int?
+  doctorId       String
+  doctor         Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   @@index([doctorId])
 }
 
 model DoctorExperience {
-  id          Int    @id @default(autoincrement())
-  startYear   Int
-  endYear     Int?
-  title       String @db.NVarChar(255)
-  place       String @db.NVarChar(255)
-  description String @db.NVarChar(Max)
-  doctorId    Int
-  doctor      Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  id              String  @id @default(uuid())
+  startYear       Int
+  endYear         Int?
+  title           String  @db.NVarChar(255)
+  place           String  @db.NVarChar(255)
+  description     String  @db.NVarChar(Max)
+  descriptionJson String? @db.NVarChar(max)
+  doctorId        String
+  doctor          Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   @@index([doctorId])
 }
@@ -184,28 +190,29 @@ model Tag {
 }
 
 model Article {
-  id           Int               @id @default(autoincrement())
-  title        String            @db.NVarChar(255)
-  slug         String            @unique @db.NVarChar(255)
-  excerpt      String            @db.NVarChar(Max)
-  content      String            @db.NVarChar(Max)
-  contentJson  String?           @db.NVarChar(max)
-  thumbnail    String?
-  published    Boolean           @default(false)
-  publishedAt  DateTime?
-  authorId     Int
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  deletedAt    DateTime?
-  views        Int               @default(0)
-  categoryId   Int
-  status       String            @default("DRAFT") @db.NVarChar(50)
-  author       User              @relation(fields: [authorId], references: [id])
-  category     Category          @relation(fields: [categoryId], references: [id])
-  tags         ArticleTag[]
-  articleViews ArticleView[]
-  revisions    ArticleRevision[]
-  reviewerName String?           @db.NVarChar(255)
+  id                Int               @id @default(autoincrement())
+  title             String            @db.NVarChar(255)
+  slug              String            @unique @db.NVarChar(255)
+  excerpt           String            @db.NVarChar(Max)
+  content           String            @db.NVarChar(Max)
+  contentJson       String?           @db.NVarChar(max)
+  thumbnail         String?
+  thumbnailPublicId String?
+  published         Boolean           @default(false)
+  publishedAt       DateTime?
+  authorId          Int
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  deletedAt         DateTime?
+  views             Int               @default(0)
+  categoryId        Int
+  status            String            @default("DRAFT") @db.NVarChar(50)
+  author            User              @relation(fields: [authorId], references: [id])
+  category          Category          @relation(fields: [categoryId], references: [id])
+  tags              ArticleTag[]
+  articleViews      ArticleView[]
+  revisions         ArticleRevision[]
+  reviewerName      String?           @db.NVarChar(255)
 
   @@index([published])
   @@index([views])

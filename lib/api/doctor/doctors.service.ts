@@ -72,19 +72,22 @@ export async function getDoctors(searchParams: URLSearchParams) {
     meta: buildMeta(query.page, query.limit, total),
   };
 }
-export async function getDoctorsSpecialty() {
+export async function getDoctorsSpecialty(withId = false) {
   const speciality = await prisma.specialty.findMany({
     where: {},
 
     select: {
       label: true,
       slug: true,
+      id: true,
     },
   });
 
   return speciality.map((c) => ({
     label: c.label,
-    value: c?.slug,
+    value: withId ? c?.id?.toString() : c?.slug,
+
+    // value: c?.slug,
   }));
 }
 

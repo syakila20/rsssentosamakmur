@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import SvgCheck from "@/Icon/Check";
@@ -41,6 +41,22 @@ export function Select({
   const [search, setSearch] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  const [openUp, setOpenUp] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    if (!wrapperRef.current) return;
+
+    const rect = wrapperRef.current.getBoundingClientRect();
+
+    const dropdownHeight = 260;
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    setOpenUp(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+  }, [open]);
   const closeDropdown = () => {
     setOpen(false);
     setSearch("");
@@ -116,53 +132,6 @@ export function Select({
     tagRemove: "cursor-pointer  text-blue-950",
   };
 
-  //   const renderSelectedValue = () => {
-  //     if (!selectedOptions.length) {
-  //       return (
-  //         <span className={selectValueClass.placeholder}>{placeholder}</span>
-  //       );
-  //     }
-
-  //     if (!multiple) {
-  //       return <span className="text-slate-700">{selectedOptions[0].label}</span>;
-  //     }
-
-  //     const visibleOptions = selectedOptions.slice(0, maxVisibleTags);
-  //     const hiddenCount = selectedOptions.length - visibleOptions.length;
-
-  //     return (
-  //       <div className="flex gap-1 align-center w-full">
-  //         <div className="flex gap-1 align-center">
-  //           {visibleOptions.map((item) => (
-  //             <div key={item.value} className={selectValueClass.tag}>
-  //               {item.label}
-  //               <div
-  //                 onClick={(e) => {
-  //                   e.stopPropagation();
-  //                   removeItem(item.value);
-  //                 }}
-  //               >
-  //                 <SvgUnCheck className={selectValueClass.tagRemove} />
-  //               </div>
-  //             </div>
-  //           ))}
-  //         </div>
-
-  //         {hiddenCount > 0 && (
-  //           <span
-  //             title={selectedOptions
-  //               .slice(maxVisibleTags)
-  //               .map((item) => item.label)
-  //               .join(", ")}
-  //             className="text-slate-500 text-xs align-baseline m-auto border"
-  //           >
-  //             +{hiddenCount}
-  //           </span>
-  //         )}
-  //       </div>
-  //     );
-  //   };
-
   const renderSelectedValue = () => {
     if (!selectedOptions.length) {
       return (
@@ -176,7 +145,7 @@ export function Select({
 
     return (
       <div
-        className=" flex
+        className="flex
     min-w-0
     flex-1
     items-center
@@ -223,14 +192,14 @@ export function Select({
   };
 
   return (
-    <div ref={wrapperRef} className={clsx("relative w-full", className)}>
+    <div ref={wrapperRef} className={clsx("relative w-full ", className)}>
       <div
         // type="button"
         // disabled={disabled}
         onClick={() => setOpen((prev) => !prev)}
         className={clsx(
           baseInputClass,
-          "flex min-h-10 w-full items-center justify-between",
+          "flex min-h-10 w-full items-center justify-between-2 ",
           " px-3 py-2",
           "text-left",
           "focus:outline-none",
@@ -269,17 +238,11 @@ export function Select({
 
       {open && (
         <div
-          className="
-              absolute
-              z-50
-              mt-2
-              w-full
-              overflow-hidden
-              rounded-lg
-              border
-              bg-white
-              shadow-lg
-            "
+          className={clsx(
+            "absolute z-55 w-full rounded-lg border bg-white shadow-lg",
+            "max-h-75 overflow-y-auto  slash-scroll",
+            openUp ? "bottom-full mb-2" : "top-full mt-2",
+          )}
         >
           {searchable && (
             <div className="p-2">

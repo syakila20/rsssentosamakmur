@@ -1,4 +1,7 @@
 import SvgCircleDown from "@/Icon/CircleDown";
+import SvgSuccess from "@/Icon/Success";
+import DangerTriangleSolid from "@/Icon/Warning";
+import SvgCrossInCircleFilled from "@/Icon/Wrong";
 import { AnimatePresence, motion } from "framer-motion";
 import type { ComponentType, SVGProps } from "react";
 
@@ -47,7 +50,7 @@ interface AnimationConfig {
 
 const toastConfig: Record<ToastType, ToastConfig> = {
   success: {
-    icon: SvgCircleDown,
+    icon: SvgSuccess,
     title: "Success",
     bg: "bg-green-50",
     border: "border-green-200",
@@ -57,7 +60,7 @@ const toastConfig: Record<ToastType, ToastConfig> = {
   },
 
   warning: {
-    icon: SvgCircleDown,
+    icon: DangerTriangleSolid,
     title: "Warning",
     bg: "bg-yellow-50",
     border: "border-yellow-200",
@@ -67,8 +70,7 @@ const toastConfig: Record<ToastType, ToastConfig> = {
   },
 
   danger: {
-    icon: SvgCircleDown,
-
+    icon: SvgCrossInCircleFilled,
     title: "Danger",
     bg: "bg-red-50",
     border: "border-red-200",

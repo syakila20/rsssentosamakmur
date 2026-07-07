@@ -1,134 +1,3 @@
-// import { useReducer } from "react";
-// import {
-//   articleReducer,
-//   CreateArticlePayload,
-//   initialArticleState,
-// } from "./article.reducer";
-
-// import {
-//   createArticleAction,
-//   updateArticleAction,
-// } from "@/modules/article/article.action";
-
-// import { parseSlugId } from "@/lib/helper";
-// import { useRouter } from "next/navigation";
-// import { useAutoSave } from "./useAutosaveArticle";
-
-// type Props = {
-//   idArticle?: number;
-// };
-
-// export function useArticleForm({ idArticle }: Props) {
-//   const [state, dispatch] = useReducer(articleReducer, initialArticleState);
-
-//   const router = useRouter();
-
-//   const autosave = useAutoSave({
-//     articleId: idArticle ?? 0,
-//   });
-
-//   function updateField<K extends keyof CreateArticlePayload>(
-//     field: K,
-//     value: CreateArticlePayload[K],
-//   ) {
-//     dispatch({
-//       type: "UPDATE_FIELD",
-//       field,
-//       value,
-//     });
-//   }
-
-//   function updateContent(contentJson: string, content: string) {
-//     dispatch({
-//       type: "UPDATE_CONTENT",
-//       payload: {
-//         contentJson,
-//         content,
-//       },
-//     });
-
-//     /**
-//      * Autosave hanya aktif ketika edit article.
-//      * Saat create belum ada id.
-//      */
-//     if (idArticle) {
-//       autosave.schedule({
-//         contentJson,
-//         content,
-//       });
-//     }
-//   }
-
-//   async function submit(isCreate?: boolean, idArticleSubmit?: number) {
-//     dispatch({
-//       type: "SET_LOADING",
-//       payload: true,
-//     });
-
-//     dispatch({
-//       type: "SET_ERROR",
-//       payload: null,
-//     });
-
-//     try {
-//       const getIdTags = parseSlugId(state.tagIds);
-
-//       const payload = {
-//         title: state.title,
-//         excerpt: state.excerpt,
-//         thumbnail: state.thumbnail,
-//         contentJson: state.contentJson,
-//         content: state.content,
-//         categoryId: 1,
-//         tagIds: getIdTags?.map((e) => e.id),
-//       };
-//       console.log("??payload", { payload });
-
-//       const response = isCreate
-//         ? await createArticleAction(payload)
-//         : await updateArticleAction(Number(idArticleSubmit), payload);
-
-//       if (!response.success) {
-//         dispatch({
-//           type: "SET_ERROR",
-//           payload: response.message || "",
-//         });
-
-//         return;
-//       }
-
-//       router.push(`/cms/artikel/edit/${response.data?.id}`);
-//     } catch (error) {
-//       dispatch({
-//         type: "SET_ERROR",
-//         payload:
-//           error instanceof Error ? error.message : "Failed create article",
-//       });
-
-//       return null;
-//     } finally {
-//       dispatch({
-//         type: "SET_LOADING",
-//         payload: false,
-//       });
-//     }
-//   }
-
-//   return {
-//     state,
-
-//     updateField,
-
-//     updateContent,
-
-//     submit,
-
-//     autosaveStatus: autosave.status,
-
-//     saveDraft: autosave.saveNow,
-//   };
-// }
-
 import { useReducer } from "react";
 import {
   ArticleFormState,
@@ -139,12 +8,14 @@ import {
 
 import {
   createArticleAction,
+  publishArticleAction,
   updateArticleAction,
 } from "@/modules/article/article.action";
 
 import { parseSlugId } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import { useAutoSave } from "./useAutosaveArticle";
+import { useToast } from "@/Component/Toast/useToast";
 
 type Props = {
   idArticle?: number;
@@ -158,15 +29,11 @@ export function useArticleForm({ idArticle, initialState }: Props) {
   );
 
   const router = useRouter();
-
+  const toast = useToast();
   const autosave = useAutoSave({
     articleId: idArticle ?? 0,
   });
 
-  /**
-   * Digunakan ketika membuka halaman edit.
-   * Tidak memicu autosave.
-   */
   function setInitialData(payload: CreateArticlePayload) {
     dispatch({
       type: "SET_INITIAL_DATA",
@@ -174,10 +41,6 @@ export function useArticleForm({ idArticle, initialState }: Props) {
     });
   }
 
-  /**
-   * Metadata.
-   * Tidak autosave.
-   */
   function updateField<K extends keyof CreateArticlePayload>(
     field: K,
     value: CreateArticlePayload[K],
@@ -189,9 +52,6 @@ export function useArticleForm({ idArticle, initialState }: Props) {
     });
   }
 
-  /**
-   * Title autosave.
-   */
   function updateTitle(title: string) {
     dispatch({
       type: "UPDATE_FIELD",
@@ -206,9 +66,20 @@ export function useArticleForm({ idArticle, initialState }: Props) {
     });
   }
 
-  /**
-   * Excerpt autosave.
-   */
+  function updateThumbnail(url: string) {
+    dispatch({
+      type: "UPDATE_FIELD",
+      field: "title",
+      value: url,
+    });
+
+    if (!idArticle) return;
+
+    autosave.schedule({
+      thumbnail: url,
+    });
+  }
+
   function updateExcerpt(excerpt: string) {
     dispatch({
       type: "UPDATE_FIELD",
@@ -224,11 +95,6 @@ export function useArticleForm({ idArticle, initialState }: Props) {
   }
 
   function updateEditor(contentJson: string, content: string) {
-    console.log("XXupdateEditor()", {
-      contentLength: content.length,
-      stack: new Error().stack,
-    });
-
     dispatch({
       type: "UPDATE_FIELDS",
       payload: {
@@ -258,40 +124,67 @@ export function useArticleForm({ idArticle, initialState }: Props) {
 
     try {
       const getIdTags = parseSlugId(state.tagIds);
-
       const payload = {
         title: state.title,
         excerpt: state.excerpt,
         thumbnail: state.thumbnail,
         contentJson: state.contentJson,
         content: state.content,
-        categoryId: Number(state.categoryId),
+        thumbnailPublicId: state?.thumbnailPublicId,
+        categoryId: Number(state?.categoryId),
         tagIds: getIdTags?.map((e) => e.id),
       };
 
-      const response = isEdit
+      const response = !isEdit
         ? await updateArticleAction(Number(idArticleSubmit), payload)
         : await createArticleAction(payload);
 
       if (!response.success) {
-        dispatch({
-          type: "SET_ERROR",
-          payload: response.message || "",
-        });
-
+        toast.danger(response.message || "Gagal menyimpan artikel.");
         return;
       }
-
+      toast.success(
+        !isEdit ? "Artikel berhasil diperbarui." : "Artikel berhasil dibuat.",
+      );
       router.push(`/cms/artikel/edit/${response.data?.id}`);
     } catch (error) {
-      dispatch({
-        type: "SET_ERROR",
-        payload:
-          error instanceof Error ? error.message : "Failed create article",
-      });
+      toast.danger(
+        error instanceof Error ? error.message : "Failed create article",
+      );
     } finally {
       dispatch({
         type: "SET_LOADING",
+        payload: false,
+      });
+    }
+  }
+
+  async function onPublishArticle(idArticleSubmit?: number) {
+    dispatch({
+      type: "SET_PUBLISHING",
+      payload: true,
+    });
+
+    dispatch({
+      type: "SET_ERROR",
+      payload: null,
+    });
+
+    try {
+      const response = await publishArticleAction(Number(idArticleSubmit));
+
+      if (!response.success) {
+        toast.danger(response.message || "Gagal publish artikel.");
+        return;
+      }
+      toast.success(response?.message || "Artikel berhasil dipublish.");
+    } catch (error) {
+      toast.danger(
+        error instanceof Error ? error.message : "Failed publish article",
+      );
+    } finally {
+      dispatch({
+        type: "SET_PUBLISHING",
         payload: false,
       });
     }
@@ -308,5 +201,8 @@ export function useArticleForm({ idArticle, initialState }: Props) {
     autosaveStatus: autosave.status,
     lastSaved: autosave.lastSaved,
     saveDraft: autosave.saveNow,
+    dirty: autosave.isDirty,
+    updateThumbnail,
+    onPublishArticle,
   };
 }

@@ -106,7 +106,7 @@
 // }
 "use client";
 
-import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
+import { Editor, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 
 import ImageToolbar from "./ImageToolbar";
 import { createImageToolbarItems } from "./createImageToolbar";
@@ -137,8 +137,8 @@ export function ImageView({
   const toolbarItems = createImageToolbarItems(editor).map((item) => ({
     ...item,
 
-    action: async (editor) => {
-      await runAction(() => item.action(editor));
+    action: async (editor: Editor) => {
+      await runAction(async () => item.action(editor));
     },
   }));
 

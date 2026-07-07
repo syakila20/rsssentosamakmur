@@ -7,11 +7,14 @@ export type CreateArticlePayload = {
   contentJson: string;
   content?: string;
   categoryId: string;
+  thumbnailPublicId?: string;
+
   tagIds: string[];
 };
 
 export type ArticleFormState = CreateArticlePayload & {
   loading: boolean;
+  publishing: boolean;
   error: string | null;
 };
 
@@ -21,38 +24,28 @@ export const initialArticleState: ArticleFormState = {
   title: "",
   excerpt: "",
   thumbnail: "",
-
+  thumbnailPublicId: "",
   contentJson: "",
   content: "",
-
   categoryId: "",
   tagIds: [],
 
   loading: false,
   error: null,
+  publishing: false,
 };
 
 export type ArticleAction =
   | {
-      /**
-       * Update satu field.
-       */
       type: "UPDATE_FIELD";
       field: ArticleField;
       value: CreateArticlePayload[ArticleField];
     }
   | {
-      /**
-       * Update beberapa field sekaligus.
-       */
       type: "UPDATE_FIELDS";
       payload: Partial<CreateArticlePayload>;
     }
   | {
-      /**
-       * Digunakan ketika membuka halaman Edit.
-       * Mengisi seluruh form dari data server.
-       */
       type: "SET_INITIAL_DATA";
       payload: CreateArticlePayload;
     }
@@ -63,6 +56,10 @@ export type ArticleAction =
   | {
       type: "SET_ERROR";
       payload: string | null;
+    }
+  | {
+      type: "SET_PUBLISHING";
+      payload: boolean;
     };
 
 export function articleReducer(
@@ -99,6 +96,11 @@ export function articleReducer(
         ...state,
         error: action.payload,
       };
+    case "SET_PUBLISHING":
+      return {
+        ...state,
+        publishing: action.payload,
+      };
 
     default:
       return state;
@@ -111,18 +113,15 @@ export function createArticleFormState(
   if (!article) {
     return initialArticleState;
   }
-  console.log("??initial", { article });
 
   return {
     title: article.title ?? "",
     excerpt: article.excerpt ?? "",
     thumbnail: article.thumbnail ?? "",
-
     contentJson: (article.contentJson as string) ?? "",
     content: article.content ?? "",
-
+    thumbnailPublicId: article?.thumbnailPublicId ?? "",
     categoryId: article.category?.id?.toString() ?? "",
-
     tagIds:
       article.tags?.map((item) => `${item.tag.slug}_${item.tag.id}`) ?? [],
 

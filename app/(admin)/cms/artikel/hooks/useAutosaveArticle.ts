@@ -11,88 +11,127 @@ type Props = {
   delay?: number;
 };
 
+const SUCCESS_DURATION = 3000;
+
 export function useAutoSave({ articleId, delay = 4000 }: Props) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const latestPayload = useRef<Partial<UpdateArticlePayload>>({});
-
-  const version = useRef(0);
-
-  const [status, setStatus] = useState<AutoSaveStatus>("idle");
-
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  /**
+   * debounce autosave
+   */
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
-   * Cleanup timer ketika component unmount.
+   * timer untuk menghilangkan status "saved"
    */
+  const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * payload terakhir yang belum tersimpan
+   */
+  const latestPayload = useRef<Partial<UpdateArticlePayload>>({});
+
+  /**
+   * race condition protection
+   */
+  const version = useRef(0);
+  const [status, setStatus] = useState<AutoSaveStatus>("idle");
+  const [isDirty, setIsDirty] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
   useEffect(() => {
     return () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+      }
+
+      if (statusTimer.current) {
+        clearTimeout(statusTimer.current);
       }
     };
   }, []);
 
+  const showSavedState = () => {
+    if (statusTimer.current) {
+      clearTimeout(statusTimer.current);
+    }
+
+    statusTimer.current = setTimeout(() => {
+      setStatus("idle");
+    }, SUCCESS_DURATION);
+  };
+
+  const resetAfterSuccess = () => {
+    latestPayload.current = {};
+    setStatus("saved");
+    setIsDirty(false);
+    setLastSaved(new Date());
+    showSavedState();
+  };
+
+  const executeSave = useCallback(
+    async (currentVersion: number) => {
+      if (Object.keys(latestPayload.current).length === 0) {
+        return;
+      }
+
+      try {
+        setStatus("saving");
+
+        const response = await autosaveArticleAction(
+          articleId,
+          latestPayload.current,
+        );
+
+        /**
+         * abaikan response lama
+         */
+        if (currentVersion !== version.current) {
+          return;
+        }
+
+        if (!response.success) {
+          setStatus("error");
+          return;
+        }
+
+        resetAfterSuccess();
+      } catch {
+        if (currentVersion !== version.current) {
+          return;
+        }
+
+        /**
+         * tetap dirty karena belum berhasil save
+         */
+        setStatus("error");
+      }
+    },
+    [articleId],
+  );
+
   const schedule = useCallback(
     (payload: Partial<UpdateArticlePayload>) => {
-      console.log("XXAUTOSAVE", payload);
-      /**
-       * Merge payload sebelumnya.
-       * Tidak overwrite.
-       */
       latestPayload.current = {
         ...latestPayload.current,
         ...payload,
       };
 
+      setIsDirty(true);
+
       version.current += 1;
 
       const currentVersion = version.current;
 
-      setStatus("idle");
-
-      if (timer.current) {
-        clearTimeout(timer.current);
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
       }
 
-      timer.current = setTimeout(async () => {
-        if (Object.keys(latestPayload.current).length === 0) {
-          return;
-        }
+      setStatus("idle");
 
-        try {
-          setStatus("saving");
-
-          const response = await autosaveArticleAction(
-            articleId,
-            latestPayload.current,
-          );
-
-          if (currentVersion !== version.current) {
-            return;
-          }
-
-          if (!response.success) {
-            setStatus("error");
-            return;
-          }
-
-          setStatus("saved");
-          setLastSaved(new Date());
-        } catch {
-          if (currentVersion !== version.current) {
-            return;
-          }
-
-          setStatus("error");
-        } finally {
-          setTimeout(() => {
-            setStatus("idle");
-          }, 4000);
-        }
+      saveTimer.current = setTimeout(() => {
+        executeSave(currentVersion);
       }, delay);
     },
-    [articleId, delay],
+    [delay, executeSave],
   );
 
   const saveNow = useCallback(async () => {
@@ -100,47 +139,20 @@ export function useAutoSave({ articleId, delay = 4000 }: Props) {
       return;
     }
 
-    /**
-     * Hindari double request.
-     */
-    if (timer.current) {
-      clearTimeout(timer.current);
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
     }
 
     version.current += 1;
 
     const currentVersion = version.current;
 
-    try {
-      setStatus("saving");
-
-      const response = await autosaveArticleAction(
-        articleId,
-        latestPayload.current,
-      );
-
-      if (currentVersion !== version.current) {
-        return;
-      }
-
-      if (!response.success) {
-        setStatus("error");
-        return;
-      }
-
-      setStatus("saved");
-      setLastSaved(new Date());
-    } catch {
-      if (currentVersion !== version.current) {
-        return;
-      }
-
-      setStatus("error");
-    }
-  }, [articleId]);
+    await executeSave(currentVersion);
+  }, [executeSave]);
 
   return {
     status,
+    isDirty,
     lastSaved,
     schedule,
     saveNow,

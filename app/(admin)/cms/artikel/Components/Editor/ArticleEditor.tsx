@@ -9,7 +9,7 @@ import Toolbar from "./Toolbar";
 import BubbleMenuBar from "./BubbleMenuBar";
 
 import { useArticleEditor } from "../../hooks/useArticleEditor";
-import { useImageUpload } from "@/hooks/useUploadImage";
+import { useEditorUpload } from "@/hooks/useEditorUploadImage";
 
 type Props = {
   value?: JSONContent;
@@ -23,7 +23,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
     onChange,
   });
 
-  const { selectImage } = useImageUpload({
+  const { selectImage } = useEditorUpload({
     editor,
   });
 
@@ -59,7 +59,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
 article-content
 min-h-[600px]
 max-w-none
-p-6
+p-4
 outline-none
   "
       />

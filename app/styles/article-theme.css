@@ -45,6 +45,11 @@
   
 }
 
+.article-editor .ProseMirror{
+padding-bottom:40vh;
+
+}
+
 
 .article-editor h1,
 .article-editor h2,

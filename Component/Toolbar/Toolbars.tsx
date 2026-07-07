@@ -46,6 +46,3 @@ export default function Toolbar({ title, action, className }: ToolbarProps) {
     </div>
   );
 }
-//  <div className="w-3xs">
-//
-//           </div>

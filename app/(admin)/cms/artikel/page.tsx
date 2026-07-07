@@ -17,10 +17,10 @@ export default async function Article({ searchParams }: Props) {
   const params = await searchParams;
 
   const query = new URLSearchParams(params);
-  const isPublished = params?.status === "1";
+  const isPublished = params?.status === "0";
 
-  const articles = await getArticles(query, isPublished);
-  const categories = await getArticleCategories(true);
+  const articles = await getArticles(query, false);
+  const categories = await getArticleCategories(false);
   return (
     <ListArticle
       initialData={articles.data as []}

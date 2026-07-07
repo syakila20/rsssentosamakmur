@@ -50,7 +50,14 @@ export async function getArticleBySlugAction(slug: string) {
 }
 
 export async function publishArticleAction(id: number) {
-  return publishArticle(id);
+  try {
+    const article = await publishArticle(id);
+    return apiResponse(article, null, "Artikel berhasil dipublish");
+  } catch (error) {
+    return apiErrorResponse(
+      error instanceof Error ? error.message : "Terjadi kesalahan",
+    );
+  }
 }
 
 export async function deleteArticleAction(id: number) {

@@ -1,3 +1,5 @@
+import { IOption } from "@/types/type";
+
 export function formatDate(
   dateInput: string | Date,
   format: "long" | "short" | "full" | "text" = "text",
@@ -105,4 +107,120 @@ export function getPromoExpiry(endDate: string | Date, threshold = 7) {
     daysLeft,
     label,
   };
+}
+
+export function getYearOptions(from = 1800, showIndex = true) {
+  const currentYear = new Date().getFullYear();
+
+  return [
+    ...(showIndex
+      ? [
+          {
+            value: "0",
+            label: "Sampai Saat Ini",
+          },
+        ]
+      : []),
+    ...Array.from(
+      {
+        length: currentYear - from + 1,
+      },
+      (_, i) => {
+        const year = currentYear - i;
+
+        return {
+          value: year?.toString(),
+          label: year.toString(),
+        };
+      },
+    ),
+  ];
+}
+
+export const DAYSOPTIONS = [
+  {
+    label: "Senin",
+    value: "1",
+  },
+  {
+    label: "Selasa",
+    value: "2",
+  },
+  {
+    label: "Rabu",
+    value: "3",
+  },
+  {
+    label: "Kamis",
+    value: "4",
+  },
+  {
+    label: "Jumat",
+    value: "5",
+  },
+  {
+    label: "Sabtu",
+    value: "6",
+  },
+  {
+    label: "Minggu",
+    value: "7",
+  },
+];
+
+export function getDayLabel(day: number) {
+  return DAYSOPTIONS.find((item) => Number(item.value) === day)?.label ?? "-";
+}
+
+export const MINUTES_IN_DAY = 24 * 60;
+
+export const TIME_INTERVAL = 1;
+
+export function getTimeOptions(interval = TIME_INTERVAL): IOption[] {
+  const options: IOption[] = [];
+
+  for (let minutes = 0; minutes < MINUTES_IN_DAY; minutes += interval) {
+    options.push({
+      label: minutesToTime(minutes),
+      value: String(minutes),
+    });
+  }
+
+  return options;
+}
+
+export function minutesToTime(minutes: number) {
+  const hour = Math.floor(minutes / 60);
+
+  const minute = minutes % 60;
+
+  return `${hour.toString().padStart(2, "0")}:${minute
+    .toString()
+    .padStart(2, "0")}`;
+}
+
+export function formatTimeRange(start: number, end: number) {
+  return `${minutesToTime(start)} - ${minutesToTime(end)}`;
+}
+
+export const TIME_OPTIONS: IOption[] = Array.from(
+  { length: 24 * 2 }, // setiap 30 menit
+  (_, index) => {
+    const minutes = index * 30;
+
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+
+    return {
+      value: String(minutes),
+      label: `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`,
+    };
+  },
+);
+export function timeToMinutes(time: string): number {
+  const [hour, minute] = time.split(":").map(Number);
+
+  return hour * 60 + minute;
 }

@@ -6,6 +6,7 @@ export type CreateArticlePayload = {
   thumbnail?: string;
   contentJson: string;
   content?: string;
+  thumbnailPublicId?: string;
   categoryId: number;
   tagIds: number[];
 };
@@ -32,6 +33,7 @@ export const detailArticles = {
   thumbnail: true,
   createdAt: true,
   contentJson: true,
+  thumbnailPublicId: true,
   category: {
     select: {
       id: true,
