@@ -10,7 +10,6 @@ export function useSendOtp() {
   const [error, setError] = useState<boolean>(false);
 
   const submit = async (email: string) => {
-    console.log("??Ermail", { email });
     try {
       setIsLoading(true);
       setMessage(null);

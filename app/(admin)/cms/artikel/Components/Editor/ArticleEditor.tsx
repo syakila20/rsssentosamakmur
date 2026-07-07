@@ -9,7 +9,7 @@ import Toolbar from "./Toolbar";
 import BubbleMenuBar from "./BubbleMenuBar";
 
 import { useArticleEditor } from "../../hooks/useArticleEditor";
-import { useImageUpload } from "@/hooks/useUploadImage";
+import { useEditorUpload } from "@/hooks/useEditorUploadImage";
 
 type Props = {
   value?: JSONContent;
@@ -18,26 +18,14 @@ type Props = {
 };
 
 export default function ArticleEditor({ value, onChange }: Props) {
-  const { editor, uploading, setUploading } = useArticleEditor({
+  const { editor } = useArticleEditor({
     content: value,
     onChange,
   });
 
-  const loadedRef = useRef(false);
-  const { selectImage } = useImageUpload({
+  const { selectImage } = useEditorUpload({
     editor,
   });
-  useEffect(() => {
-    if (!editor) return;
-
-    if (!value) return;
-
-    if (loadedRef.current) return;
-
-    editor.commands.setContent(value, false);
-
-    loadedRef.current = true;
-  }, [editor, value]);
 
   useEffect(() => {
     const handler = () => {
@@ -71,7 +59,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
 article-content
 min-h-[600px]
 max-w-none
-p-6
+p-4
 outline-none
   "
       />

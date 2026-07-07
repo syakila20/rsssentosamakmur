@@ -3,15 +3,19 @@ import React from "react";
 interface IFooterAdmin {
   leftActions?: React.ReactNode[];
   rightActions?: React.ReactNode[];
+  component?: React.ReactElement;
 }
 
-const FooterAdmin: React.FC<IFooterAdmin> = ({ leftActions, rightActions }) => {
+const FooterAdmin: React.FC<IFooterAdmin> = ({
+  leftActions,
+  rightActions,
+  component,
+}) => {
   return (
     <div
       className="
-      
-        sticky
-        bottom-0
+       sticky 
+       bottom-0 z-10
         border-t
         bg-white
         py-4
@@ -24,6 +28,7 @@ const FooterAdmin: React.FC<IFooterAdmin> = ({ leftActions, rightActions }) => {
           {leftActions?.map((item, index) => (
             <React.Fragment key={index}>{item}</React.Fragment>
           ))}
+          {component}
         </div>
 
         <div className="flex gap-3">

@@ -8,7 +8,6 @@ import React, {
   useState,
 } from "react";
 import clsx from "clsx";
-import { Label } from "../Typography/Typhography";
 
 interface PopoverContextValue {
   open: boolean;
@@ -26,10 +25,27 @@ function usePopover() {
 interface PopoverProps {
   children: React.ReactNode;
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-function Popover({ children, defaultOpen = false }: PopoverProps) {
-  const [open, setOpen] = useState(defaultOpen);
+function Popover({
+  children,
+  defaultOpen = false,
+  open: controlledOpen,
+  onOpenChange,
+}: PopoverProps) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+
+  const open = controlledOpen ?? internalOpen;
+
+  const setOpen = (value: boolean) => {
+    if (controlledOpen === undefined) {
+      setInternalOpen(value);
+    }
+
+    onOpenChange?.(value);
+  };
 
   return (
     <PopoverContext.Provider value={{ open, setOpen }}>
@@ -51,7 +67,7 @@ function Trigger({ children }: { children: React.ReactNode }) {
 interface ContentProps {
   children: React.ReactNode;
   align?: "left" | "right";
-  width?: string; // <- flexible Tailwind class
+  width?: string;
   title?: string;
   footer?: React.ReactNode;
 }
@@ -60,7 +76,6 @@ function Content({
   children,
   align = "right",
   width = "w-64",
-  title,
   footer,
 }: ContentProps) {
   const { open, setOpen } = usePopover();

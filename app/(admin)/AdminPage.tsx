@@ -8,6 +8,7 @@ interface IAdminPage {
   title: string;
   footerLeftActions?: React.ReactNode[];
   footerRightActions?: React.ReactNode[];
+  component?: React.ReactElement;
 }
 
 const AdminPage: React.FC<IAdminPage> = ({
@@ -15,6 +16,7 @@ const AdminPage: React.FC<IAdminPage> = ({
   footerLeftActions,
   footerRightActions,
   title,
+  component,
 }) => {
   const renderFooter = () => {
     if (!footerLeftActions && !footerRightActions) {
@@ -24,6 +26,7 @@ const AdminPage: React.FC<IAdminPage> = ({
       <FooterAdmin
         leftActions={footerLeftActions}
         rightActions={footerRightActions}
+        component={component}
       />
     );
   };
@@ -34,7 +37,7 @@ const AdminPage: React.FC<IAdminPage> = ({
         flex-1
         space-y-4
         py-6
-        pb-28
+        pb-32
         p-6 
         "
       >

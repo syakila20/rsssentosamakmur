@@ -33,9 +33,7 @@ export default function ImageToolbar({ editor, items, loading }: Props) {
         const active = item.isActive?.(editor);
 
         return (
-          <Button
-            size="sm"
-            variant="outline"
+          <button
             key={item.id}
             type="button"
             title={item.label}
@@ -66,7 +64,7 @@ export default function ImageToolbar({ editor, items, loading }: Props) {
             )}
           >
             {item.icon ?? item.label}
-          </Button>
+          </button>
         );
       })}
     </div>

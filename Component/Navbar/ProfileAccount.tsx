@@ -3,7 +3,7 @@ import NavbarAdmin from "./NavbarAdmin";
 
 export default async function NavbarProfileAccount() {
   const user = await requireAuth();
-
+  console.log("??user", { user });
   return (
     <NavbarAdmin
       name={user?.name}

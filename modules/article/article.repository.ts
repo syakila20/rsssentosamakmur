@@ -1,126 +1,3 @@
-// import { prisma } from "@/lib/prisma";
-// import { CreateArticlePayload, UpdateArticlePayload } from "./type";
-// import { toSlug } from "@/lib/toSlug";
-
-// export const articleRepository = {
-//   create(authorId: number, payload: CreateArticlePayload) {
-//     return prisma.article.create({
-//       data: {
-//         title: payload.title,
-//         slug: toSlug(payload?.title),
-//         excerpt: payload.excerpt || "",
-//         thumbnail: payload.thumbnail,
-//         contentJson: payload.contentJson,
-//         content: payload.content || "",
-//         authorId,
-//         categoryId: payload.categoryId,
-//         tags: {
-//           create: payload.tagIds.map((tagId) => ({
-//             tagId,
-//           })),
-//         },
-//       },
-//     });
-//   },
-
-//   update(articleId: number, payload: UpdateArticlePayload) {
-//     return prisma.article.update({
-//       where: {
-//         id: articleId,
-//       },
-//       data: {
-//         title: payload.title,
-//         excerpt: payload.excerpt,
-//         thumbnail: payload.thumbnail,
-//         contentJson: payload.contentJson,
-//         content: payload.content,
-//         categoryId: payload.categoryId,
-//       },
-//     });
-//   },
-
-//   findById(id: number) {
-//     return prisma.article.findUnique({
-//       where: {
-//         id,
-//       },
-
-//       include: {
-//         category: true,
-//         author: true,
-
-//         tags: {
-//           include: {
-//             tag: true,
-//           },
-//         },
-//       },
-//     });
-//   },
-
-//   findBySlug(slug: string) {
-//     return prisma.article.findFirst({
-//       where: {
-//         slug,
-//       },
-//     });
-//   },
-
-//   publish(id: number) {
-//     return prisma.article.update({
-//       where: {
-//         id,
-//       },
-
-//       data: {
-//         status: "PUBLISHED",
-//         publishedAt: new Date(),
-//       },
-//     });
-//   },
-
-//   delete(id: number) {
-//     return prisma.article.update({
-//       where: {
-//         id,
-//       },
-
-//       data: {
-//         deletedAt: new Date(),
-//       },
-//     });
-//   },
-
-//   restore(id: number) {
-//     return prisma.article.update({
-//       where: {
-//         id,
-//       },
-
-//       data: {
-//         deletedAt: null,
-//       },
-//     });
-//   },
-
-//   autosaveDraft(id: number, payload: UpdateArticlePayload) {
-//     return prisma.article.update({
-//       where: {
-//         id,
-//       },
-
-//       data: {
-//         title: payload.title,
-//         excerpt: payload.excerpt,
-//         thumbnail: payload.thumbnail,
-//         contentJson: payload.contentJson,
-//         content: payload.content,
-//         categoryId: payload.categoryId,
-//         updatedAt: new Date(),
-//       },
-//     });
-//   },
-// };
 import { prisma } from "@/lib/prisma";
 import { CreateArticlePayload, UpdateArticlePayload } from "./type";
 import { toSlug } from "@/lib/toSlug";
@@ -136,6 +13,7 @@ export async function createArticleRepository(
       excerpt: payload.excerpt || "",
       thumbnail: payload.thumbnail,
       contentJson: payload.contentJson,
+      thumbnailPublicId: payload?.thumbnailPublicId,
       content: payload.content || "",
       authorId,
       categoryId: payload.categoryId,
@@ -161,6 +39,7 @@ export async function updateArticleRepository(
       slug: toSlug(payload?.title || ""),
       excerpt: payload.excerpt || "",
       thumbnail: payload.thumbnail,
+      thumbnailPublicId: payload?.thumbnailPublicId,
       contentJson: payload.contentJson,
       content: payload.content || "",
       categoryId: Number(payload.categoryId),
@@ -188,6 +67,7 @@ export async function findArticleByIdRepository(id: number) {
       thumbnail: true,
       createdAt: true,
       contentJson: true,
+      thumbnailPublicId: true,
       category: {
         select: {
           id: true,
@@ -211,7 +91,7 @@ export async function findArticleBySlugRepository(slug: string) {
   });
 }
 
-export async function publishArticleRepository(id: number) {
+export async function publishArticleRepository(id: number, name: string) {
   return prisma.article.update({
     where: {
       id,
@@ -221,6 +101,7 @@ export async function publishArticleRepository(id: number) {
       published: true,
       publishedAt: new Date(),
       status: "PUBLISHED",
+      reviewerName: name,
     },
   });
 }

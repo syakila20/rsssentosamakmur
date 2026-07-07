@@ -11,6 +11,7 @@ import { useQueryServer } from "@/hooks/useQuery";
 import { useRouter } from "next/navigation";
 import { Select } from "@/Component/Select/Select";
 import AdminPage from "@/app/(admin)/AdminPage";
+import ToolbarArtikel from "../Toolbar/Toolbar";
 
 const ListArticle: React.FC<ArticleClientProps> = ({
   initialData,
@@ -25,26 +26,14 @@ const ListArticle: React.FC<ArticleClientProps> = ({
       searchKey: "search",
     });
   const router = useRouter();
-
   return (
     <AdminPage title="Artikel">
-      <Toolbar
-        title="List Artikel"
-        onSearch={(e) => setSearch(e)}
-        className="pb-2"
-        showSearch
-        action={
-          <>
-            <Button
-              variant="secondary"
-              shape="full"
-              icon={<SvgPlus className="shrink-0" height="20" />}
-              onClick={() => router.push("/cms/artikel/tambah")}
-            >
-              Artikel
-            </Button>
-          </>
-        }
+      <ToolbarArtikel
+        optionCategory={categories}
+        onSearch={(val) => setSearch(val)}
+        onApplyFilter={(cat, _) => {
+          setCategory(cat);
+        }}
       />
 
       <Table

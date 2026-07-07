@@ -10,7 +10,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { createToolbarItems } from "../Components/Editor/ToolbarItems";
 import { SlashCommand } from "../Components/Editor/Extension/SlashCommand";
 import { CustomImage } from "../Components/Editor/Extension/Image/Image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   content?: JSONContent;
@@ -20,6 +20,8 @@ type Props = {
 
 export function useArticleEditor({ content, onChange }: Props) {
   const [uploading, setUploading] = useState(false);
+  const lastJson = useRef("");
+  const hydrated = useRef(false);
   const editor = useEditor({
     immediatelyRender: false,
 
@@ -58,13 +60,30 @@ export function useArticleEditor({ content, onChange }: Props) {
       }),
     ],
 
-    content,
-
     onUpdate({ editor }) {
+      const json = JSON.stringify(editor.getJSON());
+
+      if (json === lastJson.current) {
+        return;
+      }
+
+      lastJson.current = json;
+
       onChange?.(editor.getJSON(), editor.getHTML());
     },
   });
-  console.log("??editor", editor?.commands);
+
+  useEffect(() => {
+    if (!editor) return;
+    if (!content) return;
+    if (hydrated.current) return;
+
+    lastJson.current = JSON.stringify(content);
+
+    editor.commands.setContent(content, false);
+
+    hydrated.current = true;
+  }, [editor, content]);
 
   return {
     editor,

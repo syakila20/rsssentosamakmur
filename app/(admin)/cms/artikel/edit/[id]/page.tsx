@@ -5,6 +5,7 @@ import {
 import { getArticleById } from "@/modules/article/article.service";
 import AddArticle from "../../Components/ArticleForm/ArticleForm";
 import { IDetailArticle } from "@/modules/article/type";
+import { hasPermission } from "@/lib/auth/hasPermission";
 type Props = {
   params: Promise<{
     id: string;
@@ -12,6 +13,8 @@ type Props = {
 };
 export default async function Page({ params }: Props) {
   const { id } = await params;
+  const hasApprovalPermission = await hasPermission("article.approved");
+
   const [categories, tags, article] = await Promise.all([
     getArticleCategories(true),
     getTagsArticle(),
@@ -24,6 +27,7 @@ export default async function Page({ params }: Props) {
       isCreate={false}
       content={article as IDetailArticle}
       idArticle={Number(id)}
+      hasApprovalPermission={hasApprovalPermission}
     />
   );
 }

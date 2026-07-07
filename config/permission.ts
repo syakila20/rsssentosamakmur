@@ -13,6 +13,7 @@ export const PERMISSIONS = [
   "article.read",
   "article.update",
   "article.delete",
+  "article.approved",
 
   // Doctor directory
   "doctor.create",

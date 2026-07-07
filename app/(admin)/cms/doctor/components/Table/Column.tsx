@@ -15,14 +15,23 @@ export const Columns: Column<IDoctorCard>[] = [
     key: "name",
     title: "Doktor",
     render(row) {
-      return <span>{`${row?.name} ${row?.specialty?.title}`}</span>;
+      return (
+        <div className="flex flex-col">
+          <div>
+            <img className="w-10 h-10" src={row?.image} alt="gambar" />
+          </div>
+          <span className="font-medium text-slate-600">{`${row?.name} ${row?.specialty?.title}`}</span>
+          <span className="font-light text-slate-400">
+            {row?.specialty?.label}
+          </span>
+        </div>
+      );
     },
   },
   {
     key: "isActive",
-    title: "Status",
+    title: "Kontak",
     render(row, index) {
-      console.log("??", { row });
       return <span>{row?.isActive ? "Aktif" : "Tidak Aktif"}</span>;
     },
   },

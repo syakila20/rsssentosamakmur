@@ -51,7 +51,6 @@ export default function ArticleClient({
           selected={filters.category as string}
           multiple={false}
           onChange={(val) => {
-            console.log("??", { val });
             updateFilter("category", val === "all" ? "" : String(val));
           }}
         />

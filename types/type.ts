@@ -57,6 +57,9 @@ export interface IArticleCard {
     name: string;
     slug: string;
   };
+  tags?: {
+    tag: string[];
+  };
   createdAt: Date;
   thumbnail: string;
   author?: {
